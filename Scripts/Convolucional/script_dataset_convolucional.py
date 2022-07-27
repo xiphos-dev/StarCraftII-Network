@@ -265,6 +265,11 @@ y = df["Label"]
 
 # In[9]:
 
+def mascaraCoordenadas(x,y,mapa): #esta funcion "centra" las coordenadas en un nuevo origen
+    #el objetivo es crear un sistema de coordenadas que comience en cero para las estructuras dentro de la main y natural
+    if mapa == "Interloper":
+        x -= 104
+        return x,y
 
 def biyeccionCoordenadas(x,y):
     x_biyeccion = 2*x
@@ -302,7 +307,7 @@ def ubicarEstructura(dataset, nfila, fila, estructura):
     
         if x < 0 or y > 68: # x menor a cero implica que la estructura esta a la izquierda de la main
               continue              # y mayor a 68 implica que la estructura esta sobre el limite superior de la natural
-              
+
         x,y = biyeccionCoordenadas(x,y)
         x = int(x)
         y = int(y)
