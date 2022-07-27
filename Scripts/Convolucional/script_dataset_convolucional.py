@@ -297,7 +297,12 @@ def ubicarEstructura(dataset, nfila, fila, estructura):
         
         x = float(fila[campo])
         y = float(fila[campo_y])
+
+        x,y = mascaraCoordenadas(x,y,"Interloper")
     
+        if x < 0 or y > 68: # x menor a cero implica que la estructura esta a la izquierda de la main
+              continue              # y mayor a 68 implica que la estructura esta sobre el limite superior de la natural
+              
         x,y = biyeccionCoordenadas(x,y)
         x = int(x)
         y = int(y)
