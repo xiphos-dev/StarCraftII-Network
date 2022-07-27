@@ -15,7 +15,7 @@ import numpy as np
 # In[2]:
 
 
-ruta = "./"
+ruta = "../../"
 archivo = "interloper_protoss.csv"
 file = ruta+archivo
 
@@ -26,7 +26,7 @@ df = pd.read_csv(file, sep=',', dtype={"Label": str})
 
 
 
-ruta = "./"
+ruta = "../../"
 archivo = "extension_dataset_p_interloper.csv"
 file = ruta+archivo
 
@@ -212,6 +212,7 @@ mapeo_numero_estructura = {
 }
 
 mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
+mapeo_estructura_canal = {estructura:0 for estructura in estructuras}
 
 tier_1 = ["Stargate",'TwilightCouncil','RoboticsFacility','DarkShrine','TemplarArchives']
 
@@ -235,12 +236,31 @@ mapeo_estructuras_permutables_numero = {numero:estructura for estructura,numero 
 
 # In[8]:
 
+valores = df["Label"].value_counts()
 
-'''
+for llave, valor in valores.items():
+    if valor < 500:
+        del valores[llave]
+        
+#del valores["1 Hatch "] 
+#del valores["2 Hatch "] 
+#del valores["3 Hatch "] 
+
+
+
+builds = df[df["Label"].isin(valores.keys())]
+
+builds_objetivo = builds.Label.unique().tolist()
+
+for build in builds_objetivo: 
+    print(build)
+print(len(builds_objetivo))
+
+
 df = df[df["Label"].isin(builds_objetivo)]
 X = df.drop(["Label"], axis=1).drop(estructuras_tiempo, axis=1)
 y = df["Label"]
-'''
+
 
 
 # In[9]:
@@ -262,7 +282,7 @@ def ubicarEstructura(dataset, nfila, fila, estructura):
    # parche =  ["Assimilator"]
     #if estructura not in parche:#medida de parche para solo tratar con 3 estructuras por ahora
      #   return dataset
-    canal = mapeo_numero_estructura[estructura]
+    canal = mapeo_estructura_canal[estructura]
     #print(fila.axes[0][5])
     columnas_elegidas_x = [col for col in fila.axes[0] if estructura+"_x" in col]
     columnas_elegidas_y = [col for col in fila.axes[0] if estructura+"_y" in col]
@@ -293,7 +313,7 @@ def ubicarEstructura(dataset, nfila, fila, estructura):
                 print(x)
                 print(y)
                 print("*"*10)
-            dataset[nfila][canal][y][x] = int(canal)
+            dataset[nfila][canal][y][x] = mapeo_estructura_numero[estructura]
         #print("-"*20 + campo)
     return dataset
             
@@ -409,13 +429,14 @@ def interloperMainONatural(x,y):
         return False, False
 
 
-
 def transformarFilaEnInputConvolucional(df):
     canales = len(mapeo_numero_estructura.keys())
-    ancho = 340 #170*2
-    alto = 340 #150*2 - ahora con padding para que sea 340*340
+    #ancho = 340 #170*2
+    #alto = 340 #150*2 - ahora con padding para que sea 340*340
+    ancho = 80
+    alto = 137
     total = df.shape[0]
-    dataset = np.zeros((total,canales,alto,ancho))
+    dataset = np.zeros((total,1,alto,ancho))
     df = df.reset_index()
     for index, row in df.iterrows():
         #print(index)
@@ -486,25 +507,15 @@ params = encoder.get_params(y)
 X_train, X_test, y_train, y_test = train_test_split(dataset,dummy_y,test_size=0.20, random_state=106)
 
 
-import pickle
+from shutil import make_archive
 
-ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/X_train_rnn")
+make_archive("X_train","zip",X_train)
 
-with open("X_train","wb") as arc:
-    pickle.dump(X_train_rnn,arc)
+make_archive("X_test","zip",X_test)
 
-ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/X_test_rnn")
+make_archive("y_train","zip",y_train)
 
-with open("X_test","wb") as arc:
-    pickle.dump(X_test,arc)
-
-ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/y_train")
-with open("y_train","wb") as arc:
-    pickle.dump(y_train,arc)
-
-ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/y_test")
-with open("y_test","wb") as arc:
-    pickle.dump(y_test,arc)
+make_archive("y_test","zip",y_test)
 
 
 
