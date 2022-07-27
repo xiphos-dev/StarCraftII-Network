@@ -1104,29 +1104,63 @@ def transformarOneHot(y):
 
 
 
-_,x_batch_rnn, y_mid, vacio_mapa, vocabulario = inputRecurrenteUnicoOrdenado(X,y2,False,False,700)
+_,x_batch_rnn, x_batch_rnn_unidades, x_batch_rnn_mejoras, y_target, vacio_mapa, vocabulario, vocabulario_unidades, vocabulario_mejoras = inputRecurrenteMixto(X,y2,False,False,700)
 
-encoder_mid, dummy_y_mid = transformarOneHot(y_mid)
+encoder_mid, dummy_y_mid = transformarOneHot(y_target)
 categorias = dummy_y_mid.shape[1]
 print(encoder_mid.values())
 print(categorias)
 
-X_train_rnn, X_test_rnn, y_train, y_test=  train_test_split(x_batch_rnn, dummy_y_mid,test_size=0.20, random_state=59)
+X_train_estructuras,X_test_estructuras,X_train_unidades, X_test_unidades, X_train_mejoras, X_test_mejoras,y_train, y_test=  train_test_split(x_batch_rnn,x_batch_rnn_unidades, x_batch_rnn_mejoras,dummy_y_mid,test_size=0.20, random_state=59)
 
-ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/X_train_rnn")
-
-with open(ruta,"wb") as arc:
-    pickle.dump(X_train_rnn,arc)
-
-ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/X_test_rnn")
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/X_train_estructuras")
 
 with open(ruta,"wb") as arc:
-    pickle.dump(X_test,arc)
+    pickle.dump(X_train_estructuras,arc)
 
-ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/y_train")
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/X_test_estructuras")
+
+with open(ruta,"wb") as arc:
+    pickle.dump(X_test_estructuras,arc)
+
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/X_train_unidades")
+
+with open(ruta,"wb") as arc:
+    pickle.dump(X_train_unidades,arc)
+
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/X_test_unidades")
+
+with open(ruta,"wb") as arc:
+    pickle.dump(X_test_unidades,arc)
+
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/X_train_mejoras")
+
+with open(ruta,"wb") as arc:
+    pickle.dump(X_train_mejoras,arc)
+
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/X_test_mejoras")
+
+with open(ruta,"wb") as arc:
+    pickle.dump(X_test_mejoras,arc)
+
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/y_train")
 with open(ruta,"wb") as arc:
     pickle.dump(y_train,arc)
 
-ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/y_test")
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/y_test")
 with open(ruta,"wb") as arc:
     pickle.dump(y_test,arc)
+
+
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/vocabulario")
+
+with open(ruta,"wb") as arc:
+    pickle.dump(vocabulario,arc)
+
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/vocabulario_unidades")
+with open(ruta,"wb") as arc:
+    pickle.dump(vocabulario_unidades,arc)
+
+ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_tripleinput/vocabulario_mejoras")
+with open(ruta,"wb") as arc:
+    pickle.dump(vocabulario_mejoras,arc)

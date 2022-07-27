@@ -1115,18 +1115,22 @@ X_train_rnn, X_test_rnn, y_train, y_test=  train_test_split(x_batch_rnn, dummy_y
 
 ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/X_train_rnn")
 
-with open(ruta,"wb") as arc:
+with open("X_train_unico","wb") as arc:
     pickle.dump(X_train_rnn,arc)
 
 ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/X_test_rnn")
 
-with open(ruta,"wb") as arc:
-    pickle.dump(X_test,arc)
+with open("X_test_unico","wb") as arc:
+    pickle.dump(X_test_rnn,arc)
 
 ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/y_train")
-with open(ruta,"wb") as arc:
+with open("y_train_unico","wb") as arc:
     pickle.dump(y_train,arc)
 
 ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/y_test")
-with open(ruta,"wb") as arc:
+with open("y_test_unico","wb") as arc:
     pickle.dump(y_test,arc)
+
+
+with open("vocabulario","wb") as arc:
+	pickle.dump(vocabulario,arc)

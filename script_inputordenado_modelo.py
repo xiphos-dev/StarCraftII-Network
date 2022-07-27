@@ -5,19 +5,19 @@ import pickle
 import os
 import numpy as np
 
-with open("/data_rnn_1/X_train_rnn","rb") as arc:
+with open("X_train_unico","rb") as arc:
     X_train = pickle.load(arc)
 
-with open("/data_rnn_1/X_test_rnn","rb") as arc:
+with open("X_test_unico","rb") as arc:
     X_test = pickle.load(arc)
 
-with open("/data_rnn_1/y_train","rb") as arc:
+with open("y_train_unico","rb") as arc:
     y_train = pickle.load(arc)
 
-with open("/data_rnn_1/y_test","rb") as arc:
+with open("y_test_unico","rb") as arc:
     y_test = pickle.load(arc)
 
-input_shape_rnn = X_train_rnn.shape[1]
+input_shape_rnn = X_train.shape[1]
 
 categorias = y_train.shape[1]
 
@@ -55,7 +55,7 @@ def modeloRNN(num_unidades,vocab,embedding_dim=256,categorias=2):
     model.summary()
     return model
 
-model = modeloRNN(X_train_rnn.shape[1],len(vocabulario),256,len(encoder_mid.values()))
+model = modeloRNN(X_train.shape[1],len(vocabulario),256,len(encoder_mid.values()))
 
 
 ruta_modelo = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/Modelo_recurrente/Input_unico_midgame")

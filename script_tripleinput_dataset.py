@@ -414,8 +414,8 @@ def inputRecurrenteMixto(df,y_target,main,natural,tiempo_limite):
     vocabulario_unidades = []
     vocabulario_mejoras = []
     #largo = 30 #336 tiempo
-    largo = 28
-    largo_unidades = 50
+    largo = 100
+    largo_unidades = 500
     largo_mejoras = len(mejoras)
     vacio_mapa=[]
     for index, row in df.iterrows():
@@ -470,6 +470,7 @@ def inputRecurrenteMixto(df,y_target,main,natural,tiempo_limite):
                         if int(elemento) > tiempo_limite:
                             break
                         if int(elemento) != 0:
+			    print("Pos unidad:"+str(pos_unidades))
                             fila_unidades[pos_unidades] = [unidad,int(elemento)]
                             pos_unidades+=1
                             vacio_unidades = False
