@@ -17,6 +17,13 @@ with open("y_train_unico","rb") as arc:
 with open("y_test_unico","rb") as arc:
     y_test = pickle.load(arc)
 
+with open("vocabulario", "rb") as arc:
+    vocabulario = pickle.load(arc)
+
+with open("encoder_mid", "rb") as arc:
+    encoder_mid = pickle.load(arc)
+
+
 input_shape_rnn = X_train.shape[1]
 
 categorias = y_train.shape[1]
@@ -29,6 +36,7 @@ categorias = y_train.shape[1]
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
+from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
 
 batch_size = 128
 
@@ -40,7 +48,7 @@ lr = 5e-3
 
 def modeloRNN(num_unidades,vocab,embedding_dim=256,categorias=2):
     model = keras.Sequential()
-    model.add(layers.Embedding(vocab, embedding_dim, mask_zero=True, input_length=input_shape))
+    model.add(layers.Embedding(vocab, embedding_dim, mask_zero=True, input_length=input_shape_rnn))
 
     #model.add(layers.GRU(32))
     

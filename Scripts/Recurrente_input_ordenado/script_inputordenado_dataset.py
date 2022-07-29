@@ -16,7 +16,7 @@ import numpy as np
 # In[20]:
 
 
-ruta = "./"
+ruta = "../../"
 archivo = "protoss.csv"
 file = ruta+archivo
 
@@ -52,8 +52,8 @@ from keras.utils import np_utils
 valores = ["1 base no tech", "2 base no tech", "3 base no tech"]
 estructuras = ["Pylon",
                "Gateway",
-               "WarpGate",
-               "Battery",
+               #"WarpGate",
+               #"Battery",
                "Assimilator",
                "Nexus",
                "CyberneticsCore",
@@ -102,7 +102,7 @@ unidades = ["Zealot",
            "Immortal",
            "Observer"]
 
-mapeo_unidades_tiempo ={unidad:numero for numero,unidad in enumerate(unidades,100)}
+mapeo_unidades_tiempo ={unidad:numero for numero,unidad in enumerate(unidades,1)}
 #print(mapeo_unidades_tiempo.items())
 
 unidades_tiempo = ["Zealot_tiempo",
@@ -154,9 +154,9 @@ mejoras = [
             'CancelUpgradeToMothership',
             'ResearchDarkTemplarBlinkUpgrade'
           ]
-
-mapeo_mejora_numero = {mejora: numero for numero,mejora in enumerate(mejoras,50)}
-
+numero = len(mapeo_unidades_tiempo.keys()) + 1
+mapeo_mejora_numero = {mejora: numero for numero,mejora in enumerate(mejoras,numero)}
+numero+= len(mapeo_mejora_numero.keys()) 
 
 # In[25]:
 
@@ -219,10 +219,11 @@ mapeo_numero_estructura = {
     "FleetBeacon":14,
 }
 
+mapeo_numero_estructura = {llave:numero for numero,llave in enumerate(estructuras,numero)}
+
 mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
 
 tier_1 = ["Stargate",'TwilightCouncil','RoboticsFacility','DarkShrine','TemplarArchives']
-
 
 # In[26]:
 
@@ -1131,6 +1132,9 @@ ruta = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/data_rnn_1/y_test")
 with open("y_test_unico","wb") as arc:
     pickle.dump(y_test,arc)
 
-
 with open("vocabulario","wb") as arc:
 	pickle.dump(vocabulario,arc)
+
+with open("encoder_mid","wb") as arc:
+    pickle.dump(encoder_mid,arc)
+
