@@ -73,7 +73,6 @@ lrschedule_1 = ReduceLROnPlateau(monitor='val_loss', patience=2, verbose=1, fact
 model.compile(
     loss=keras.losses.CategoricalCrossentropy(),
     optimizer=keras.optimizers.Adam(lr=lr), 
-    callbacks=[checkpoint_best, lrschedule_1],
     metrics=["accuracy"]
 )
 
