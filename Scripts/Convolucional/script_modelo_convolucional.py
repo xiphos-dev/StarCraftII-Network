@@ -63,24 +63,40 @@ lr = 5e-3
 
 
 
-def crearRedConvolusional(forma,categorias):
+def crearRedConvolucional(forma,categorias):
     model = models.Sequential()
-    model.add(layers.InputLayer(input_shape=forma))
-    model.add(layers.Conv2D(16, 3, activation='relu', data_format="channels_first"))
-    model.add(layers.MaxPooling2D((2, 2))
-    model.add(layers.Conv2D(32, 3,data_format="channels_first", activation='relu'))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(32,3,data_format="channels_first", activation="relu"))
-    model.add(layers.MaxPooling2D((2,2)))
-    model.add(layers.Flatten())
+    model.add(layers.Conv2D(8, 3, padding="same",activation='relu', data_format="channels_first", input_shape=forma))
+    model.add(layers.MaxPooling2D(data_format="channels_first"))
+    model.add(layers.Conv2D(16, 3, padding="same",data_format="channels_first", activation='relu'))
+    model.add(layers.MaxPooling2D(data_format="channels_first"))
+    model.add(layers.Conv2D(8, 3, padding="same", data_format="channels_first", activation='relu'))
+    model.add(layers.MaxPooling2D(data_format="channels_first"))
+    model.add(layers.Flatten(data_format="channels_first"))
+    model.add(layers.Dropout(.15))
     #model.add(layers.Dense(1, activation='relu'))
+    model.add(layers.Dense(512))
     model.add(layers.Dense(categorias, activation="softmax"))
     return model
 
 
+def crearRedConvolucionalSinPadding(forma,categorias:
+    model = models.Sequential()
+    model.add(layers.Conv2D(8, 3, activation='relu', data_format="channels_first", input_shape=forma))
+    model.add(layers.MaxPooling2D(data_format="channels_first"))
+    model.add(layers.Conv2D(16, 3, data_format="channels_first", activation='relu'))
+    model.add(layers.MaxPooling2D(data_format="channels_first"))
+    model.add(layers.Conv2D(8, 3, data_format="channels_first", activation='relu'))
+    model.add(layers.MaxPooling2D(data_format="channels_first"))
+    model.add(layers.Flatten(data_format="channels_first"))
+    model.add(layers.Dropout(.15))
+    #model.add(layers.Dense(1, activation='relu'))
+    model.add(layers.Dense(512))
+    model.add(layers.Dense(categorias, activation="softmax"))
+    return model
 
-modelo = crearRedConvolusional(X_train.shape[1:],categorias)
 
+#modelo = crearRedConvolucional(X_train.shape[1:],categorias)
+modelo = crearRedConvolucionalSinPadding(X_train.shape[1:],categorias)
 
 #y_train = np.asarray(y_train)
 #y_test = np.asarray(y_test)
