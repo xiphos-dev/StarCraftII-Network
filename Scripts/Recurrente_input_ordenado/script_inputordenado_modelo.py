@@ -67,8 +67,8 @@ model = modeloRNN(X_train.shape[1],len(vocabulario),256,len(encoder_mid.values()
 
 
 ruta_modelo = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/Modelo_recurrente/Input_unico_midgame")
-checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_loss',verbose=1, save_best_only=True, mode='auto')
-lrschedule_1 = ReduceLROnPlateau(monitor='val_loss', patience=2, verbose=1, factor=0.70, mode='auto')
+checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='auto')
+lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
 model.compile(
     loss=keras.losses.CategoricalCrossentropy(),

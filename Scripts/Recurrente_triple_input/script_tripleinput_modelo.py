@@ -93,8 +93,8 @@ modelo_rnn = modeloRNNPuro(input_shape_rnn,input_shape_mejoras,input_shape_rnn_u
 
 #ruta_modelo = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/Modelo_recurrente/Input_triple_midgame")
 ruta_modelo = "../../Modelo_recurrente/Input_triple_midgame"
-checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_loss',verbose=1, save_best_only=True, mode='max')
-lrschedule_1 = ReduceLROnPlateau(monitor='val_loss', patience=2, verbose=1, factor=0.70, mode='auto')
+checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='max')
+lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
 modelo_rnn.compile(
     loss=keras.losses.CategoricalCrossentropy(),

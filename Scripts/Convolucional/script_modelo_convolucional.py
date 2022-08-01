@@ -91,18 +91,19 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 import tensorflow.keras as ks
 
 ruta_modelo = "../../Modelo_convolucional/modelo_entrenado_convolucional"
-checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_loss',verbose=1, save_best_only=True, mode='auto')
-lrschedule_1 = ReduceLROnPlateau(monitor='val_loss', patience=2, verbose=1, factor=0.70, mode='auto')
+checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='auto')
+lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
 modelo.compile(loss='categorical_crossentropy', 
                      optimizer=ks.optimizers.Adam(lr=lr, decay=5e-4), 
+                     metrics=["accuracy"]
                      #metrics=[tf.keras.metrics.CategoricalCrossentropy()]
                     )
 
 historia= modelo.fit(
             x=X_train, 
             y=y_train, 
-            batch_size=16, 
+            batch_size=256, 
             epochs=50, 
             verbose=True, 
             validation_data=(X_test, y_test),
