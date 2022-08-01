@@ -94,7 +94,7 @@ ruta_modelo = "../../Modelo_convolucional/modelo_entrenado_convolucional"
 checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='auto')
 lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
-modelo.compile(loss='categorical_crossentropy', 
+modelo.compile(loss=keras.losses.CategoricalCrossentropy(), 
                      optimizer=ks.optimizers.Adam(lr=lr, decay=5e-4), 
                      metrics=["accuracy"]
                      #metrics=[tf.keras.metrics.CategoricalCrossentropy()]
