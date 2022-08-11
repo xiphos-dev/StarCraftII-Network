@@ -89,10 +89,27 @@ def modeloRNNPuro(input_rnn,input_mejoras,input_rnn_unidades,vocab,vocab_unidade
     
     return modelo
 
-modelo_rnn = modeloRNNPuro(input_shape_rnn,input_shape_mejoras,input_shape_rnn_unidades,max(vocabulario_mid)+1,max(vocabulario_unidades_mid)+1,max(vocabulario_mejoras_mid)+1,256,256,256,categorias)
+def modeloRNNPuro_2_inputs(input_rnn,input_mejoras,vocab,vocab_mejoras,embedding_dim=256,embedding_mejoras=256,categorias=2):
+    inputs_rnn = keras.Input(shape=(input_rnn,))
+    rnn = layers.Embedding(vocab, embedding_dim, input_length=input_rnn)(inputs_rnn)
+    rnn = layers.LSTM(input_rnn) (rnn)
+    
+    inputs_mejoras = keras.Input(shape=(input_mejoras,))
+    rnn_mejoras = layers.Embedding(vocab_mejoras, embedding_mejoras, input_length=input_mejoras)(inputs_mejoras)
+    rnn_mejoras = layers.LSTM(input_mejoras) (rnn_mejoras)
+    
+    y = layers.Concatenate(axis=1)([rnn_mejoras, rnn])
+    
+    output = layers.Dense(categorias, activation="softmax")(y)
+    
+    modelo = keras.Model(inputs=[inputs_rnn,inputs_mejoras], outputs=output, name="Red_recurrente")
+    
+    return modelo
+
+modelo_rnn = modeloRNNPuro_2_inputs(input_shape_rnn,input_shape_mejoras,max(vocabulario_mid)+1,max(vocabulario_mejoras_mid)+1,128,128,categorias)
 
 #ruta_modelo = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/Modelo_recurrente/Input_triple_midgame")
-ruta_modelo = "../../Modelo_recurrente/Input_triple_midgame"
+ruta_modelo = "../../../Modelo_recurrente/Input_doble_midgame_p"
 checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='max')
 lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
@@ -113,5 +130,5 @@ historia = modelo_rnn.fit(
 
 
 
-with open('../../Modelo_recurrente/historia_input_triple', 'wb') as file_pi:
+with open ('../../../Modelo_recurrente/historia_input_doble_p', 'wb') as file_pi:
     pickle.dump(historia, file_pi)
