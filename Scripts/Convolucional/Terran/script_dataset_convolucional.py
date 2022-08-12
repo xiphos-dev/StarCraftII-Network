@@ -15,8 +15,8 @@ import numpy as np
 # In[2]:
 
 
-ruta = "../../"
-archivo = "interloper_protoss.csv"
+ruta = "../../../"
+archivo = "interloper_terran.csv"
 file = ruta+archivo
 
 
@@ -26,7 +26,7 @@ df = pd.read_csv(file, sep=',', dtype={"Label": str})
 
 
 
-ruta = "../../"
+ruta = "./"
 archivo = "extension_dataset_p_interloper.csv"
 file = ruta+archivo
 
@@ -40,202 +40,136 @@ from sklearn.preprocessing import LabelEncoder
 from keras.utils import np_utils
 
 
-# In[6]:
+estructuras = [            
+            "CommandCenter",
+            "PlanetaryFortress",
+            "OrbitalCommand",#este lleva un valor arbitrario de llave pues no es construido directamente, asi que no tiene llave propia
+            "SupplyDepot",
+            "Refinery",
+            "Barracks",
+            "Factory",
+            "Starport",
+            "EngineeringBay",
+            "Armory",
+            "MissileTurret",
+            "SensorTower",
+            "Bunker",
+            "FusionCore",
+            "GhostAcademy"]
 
+estructuras_addons = [
+    
+                "StarportReactor",
+                "StarportTechLab",
+                "FactoryReactor",
+                "FactoryTechLab",
+                "BarracksReactor",
+                "BarracksTechLab",
+]
 
-valores = ["1 base no tech", "2 base no tech", "3 base no tech"]
+estructuras_tiempo = [valor+"_tiempo" for valor in estructuras]
 
-estructuras = ["Pylon",
-               "Gateway",
-               "Assimilator",
-               "Nexus",
-               "CyberneticsCore",
-               "RoboticsFacility",
-               "RoboticsBay",
-               "TemplarArchive",
-               "DarkShrine",
-               "Forge",
-               "TwilightCouncil",
-               "Stargate",
-               "FleetBeacon",
-               "PhotonCannon"]
+estructuras_addons_tiempo = [valor+"_tiempo" for valor in estructuras_addons]
 
-estructuras_tiempo = ["Pylon_tiempo",
-               "Gateway_tiempo",
-               "Assimilator_tiempo",
-               "Nexus_tiempo",
-               "CyberneticsCore_tiempo",
-               "RoboticsFacility_tiempo",
-               "RoboticsBay_tiempo",
-               "TemplarArchive_tiempo",
-               "DarkShrine_tiempo",
-               "Forge_tiempo",
-               "TwilightCouncil_tiempo",
-               "Stargate_tiempo",
-               "FleetBeacon_tiempo",
-               "PhotonCannon_tiempo"]
+unidades = ["SCV",
+            "Reaper",
+            "Marine",
+            "WidowMine",
+            "Medivac",
+            "Viking",
+            "Marauder",
+            "Raven",
+            "SiegeTank",
+            "Liberator",
+            "BattleCruiser",
+            "Cyclone",
+            "Hellbat",
+            "Hellion",
+            "Thor",
+            "Banshee",
+            "Ghost"]
 
-unidades = ["Zealot",
-           "Probe",
-           "Adept",
-           "Stalker",
-           "Sentry",
-           "HighTemplar",
-           "DarkTemplar",
-           "VoidRay",
-           "Phoenix",
-           "Oracle",
-           "Carrier",
-           "Tempest",
-           "Archon",
-           "WarpPrism",
-           "Colossus",
-           "Disruptor",
-           "Immortal",
-           "Observer"]
-
-mapeo_unidades_tiempo ={unidad:numero for numero,unidad in enumerate(unidades,100)}
+mapeo_unidades_tiempo ={unidad:numero for numero,unidad in enumerate(unidades, 1)}
 #print(mapeo_unidades_tiempo.items())
 
-unidades_tiempo = ["Zealot_tiempo",
-           "Probe_tiempo",
-           "Adept_tiempo",
-           "Stalker_tiempo",
-           "Sentry_tiempo",
-           "HighTemplar_tiempo",
-           "DarkTemplar_tiempo",
-           "VoidRay_tiempo",
-           "Phoenix_tiempo",
-           "Oracle_tiempo",
-           "Carrier_tiempo",
-           "Tempest_tiempo",
-           "Archon_tiempo",
-           "WarpPrism_tiempo",
-           "Colossus_tiempo",
-           "Disruptor_tiempo",
-           "Immortal_tiempo",
-           "Observer_tiempo"]
+unidades_tiempo = [unidad+"_tiempo" for unidad in unidades]
 
-mejoras = [ 
-            "ResearchFluxVanes",
-            "ResearchCharge",
-            "ResearchPsiStormTech",
-            "ResearchBlink",
-            "ResearchAdeptPiercingAttack",
-            "ResearchGraviticDrive",
-            "ResearchExtendedThermalLance",
-            "ResearchWarpGate",
-            "ResearchAnionPulseCrystals",
-            "ResearchGraviticBoosters",
-            "UpgradeGroundWeapons1",
-            "UpgradeGroundWeapons2",
-            "UpgradeGroundWeapons3",
-            "UpgradeGroundArmor1",
-            "UpgradeGroundArmor2",
-            "UpgradeGroundArmor3",
-            "UpgradeAirWeapons1",
-            "UpgradeAirWeapons2",
-            "UpgradeAirWeapons3",
-            "UpgradeAirArmor1",
-            "UpgradeAirArmor2",
-            "UpgradeAirArmor3",
-            "UpgradeShields1",
-            "UpgradeShields2",
-            'UpgradesShields3',
-            'UpgradeToMothership',
-            'CancelUpgradeToMothership',
-            'ResearchDarkTemplarBlinkUpgrade'
-          ]
+mejoras = [
+                "UpgradeTerranInfantryWeapons1",
+                "UpgradeTerranInfantryWeapons2",
+                "UpgradeTerranInfantryWeapons3",
+                "UpgradeTerranInfantryArmor1",
+                "UpgradeTerranInfantryArmor2",
+                "UpgradeTerranInfantryArmor3",
+                "UpgradeStructureArmor",
 
-mapeo_mejora_numero = {mejora: numero for numero,mejora in enumerate(mejoras,50)}
+                "ResearchStimpack",
+                "ResearchCombatShield",
+                "ResearchConcussiveShells",
+                "ResearchMedivacIncreaseSpeedBoost",
+                "ResearchInfernalPreIgniter",
+                "ResearchCloakingField",
+                "ResearchWeaponRefit",
+                "ResearchNeosteelFrame",
+                "ResearchHiSecAutoTracking",
+                "ResearchDrillingClaws",
+                "ResearchBansheeSpeed",
+                "ResearchPersonalCloaking",
+                "ResearchRavenRecalibratedExplosives",
+                'ResearchCorvidReactor',
+
+                "ResearchTerranVehicleAndShipArmorsLevel1",
+                "ResearchTerranVehicleAndShipArmorsLevel2",
+                "ResearchTerranVehicleAndShipArmorsLevel3",
+
+                "UpgradeVehicleWeapons1",
+                "UpgradeVehicleWeapons2",
+                "UpgradeVehicleWeapons3",
+
+                "UpgradeShipWeapons1",
+                "UpgradeShipWeapons2",
+                "UpgradeShipWeapons3",
+                "ResearchCycloneLockOnDamageUpgrade",
+
+                "ResearchLiberatorAGRangeUpgrade"
+        ]
 
 
-# In[19]:
-
-
-estructuras_reducido = [
-               "Pylon",
-               "Gateway",
-               "Assimilator",
-               "Nexus",
-               "RoboticsFacility",
-               "RoboticsBay",
-               "DarkShrine",
-               "TwilightCouncil",
-               "Stargate",
-               "FleetBeacon"]
-
-builds_objetivo = [
-    
-    "2 base DT",
-    "2 base Glaives",
-    "2 base Robo",
-    "2 base Twilight",
-    "2 base Stargate",
-    "3 base DT",
-    "3 base Fleet Beacon",
-    "3 base Glaives",
-    "3 base RoboBay",
-    "3 base Stargate",
-    "3 base Twilight"
-]
-
-builds_poco_presentes = [
-    "1 base Blink",
-    "1 base Glaives",
-    "1 base Blink 7+Gates",
-    "1 base Fleet Beacon",
-    "1 base Glaives 7+Gates",
-    "1 base RoboBay",
-    "1 base Twilight 7+Gates",
-    "2 base Blink 7+Gates",
-    "3 base",
-    "3 base +1 ground",
-]
-
-mapeo_numero_estructura = {
-    
-    "Pylon": 1,
-    "Assimilator": 2,
-    "Gateway": 3,
-    "Forge": 4,
-    "Nexus": 5,
-    "RoboticsFacility": 6,
-    "RoboticsBay": 7,
-    "DarkShrine": 8,
-    "TwilightCouncil": 9,
-    "Stargate": 10,
-    "TemplarArchives": 11,
-    "CyberneticsCore": 12,
-    "PhotonCannon": 13,
-    "FleetBeacon":14,
-}
-
-mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
-mapeo_estructura_canal = {estructura:0 for estructura in estructuras}
-
-tier_1 = ["Stargate",'TwilightCouncil','RoboticsFacility','DarkShrine','TemplarArchives']
 
 estructuras_permutables = [
-    "Gateway",
-    "CyberneticsCore",
-    "RoboticsFacility",
-    "RoboticsBay",
-    "TemplarArchive",
-    "DarkShrine",
-    "Forge",
-    "TwilightCouncil",
-    "Stargate",
-    "FleetBeacon",
-    "PhotonCannon"
+            "SupplyDepot",
+            "Barracks",
+            "Factory",
+            "Starport",
+            "EngineeringBay",
+            "Armory",
+            "MissileTurret",
+            "SensorTower",
+            "Bunker",
+            "FusionCore",
+            "GhostAcademy"
 ]
+
+
+mapeo_numero_estructura = {elemento:numero for numero,elemento in enumerate(estructuras_permutables)}
+
+
+mapeo_estructura_canal = {estructura:0 for estructura in estructuras_permutables }
+mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
+
+#mapeo_estructura_addons_canal = {estructura: 1 for estructura in estructuras_addons}
+#mapeo_estructura_canal.update(mapeo_estructura_addons_canal)
+
+mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
+
+
+
 
 mapeo_numero_estructuras_permutables = {estructura:numero for numero,estructura in enumerate(estructuras_permutables)}
 mapeo_estructuras_permutables_numero = {numero:estructura for estructura,numero in mapeo_numero_estructuras_permutables.items()}
 
-
-# In[8]:
-
+#tier_1 = ["Factory","FactoryReactor","FactoryTechLab",'Staport','StarportReactor','StaportTechlab']
+tier_1 = ["ResearchConcussiveShells","ResearchStimpack","ResearchInfernalPreIgniter","ResearchCombatShield","ResearchCloakingField","ResearchLiberatorAGRangeUpgrade"]
 valores = df["Label"].value_counts()
 
 for llave, valor in valores.items():
@@ -251,11 +185,6 @@ for llave, valor in valores.items():
 builds = df[df["Label"].isin(valores.keys())]
 
 builds_objetivo = builds.Label.unique().tolist()
-
-for build in builds_objetivo: 
-    print(build)
-print(len(builds_objetivo))
-
 
 df = df[df["Label"].isin(builds_objetivo)]
 X = df.drop(["Label"], axis=1).drop(estructuras_tiempo, axis=1)
@@ -440,7 +369,7 @@ def interloperMainONatural(x,y):
 
 
 def transformarFilaEnInputConvolucional(df):
-    canales = len(mapeo_numero_estructura.keys())
+    canales = 1
     #ancho = 340 #170*2
     #alto = 340 #150*2 - ahora con padding para que sea 340*340
     ancho = 80
@@ -518,15 +447,21 @@ X_train, X_test, y_train, y_test = train_test_split(dataset,dummy_y,test_size=0.
 
 
 from shutil import make_archive
+import bz2
+import pickle
 
-make_archive("X_train","zip",X_train)
+ofile = bz2.BZ2File("X_train","wb")
+pickle.dump(X_train,ofile)
+ofile.close()
 
-make_archive("X_test","zip",X_test)
+ofile = bz2.BZ2File("X_test","wb")
+pickle.dump(X_test,ofile)
+ofile.close()
 
-make_archive("y_train","zip",y_train)
+with open("y_train","wb") as arc:
+    pickle.dump(y_train,arc)
 
-make_archive("y_test","zip",y_test)
-
-
+with open("y_test","wb") as arc:
+    pickle.dump(y_test,arc)
 
 

@@ -15,8 +15,8 @@ import numpy as np
 # In[2]:
 
 
-ruta = "../../"
-archivo = "interloper_protoss.csv"
+ruta = "../../../"
+archivo = "interloper_zerg.csv"
 file = ruta+archivo
 
 
@@ -26,8 +26,8 @@ df = pd.read_csv(file, sep=',', dtype={"Label": str})
 
 
 
-ruta = "../../"
-archivo = "extension_dataset_p_interloper.csv"
+ruta = "./"
+archivo = "extension_dataset_z_interloper.csv"
 file = ruta+archivo
 
 
@@ -40,198 +40,134 @@ from sklearn.preprocessing import LabelEncoder
 from keras.utils import np_utils
 
 
-# In[6]:
+estructuras = [
+            "Hatchery",
+            "Extractor",
+            "SpawningPool",
+            "RoachWarren",
+            "BanelingNest",
+            "SporeCrawler",
+            "EvolutionChamber",
+            "HydraliskDen",
+            "InfestationPit",
+            "SpineCrawler",
+            "Spire",
+            "UltraliskCavern"
+              ]
+estructuras_permutables = [
+            "SpawningPool",
+            "RoachWarren",
+            "BanelingNest",
+            "SporeCrawler",
+            "EvolutionChamber",
+            "HydraliskDen",
+            "InfestationPit",
+            "SpineCrawler",
+            "Spire",
+            "UltraliskCavern"
+    
+]
 
+mapeo_numero_estructura = {estructura:numero for numero,estructura in enumerate(estructuras_permutables,1)}
+mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
+mapeo_estructura_canal = {estructura:0 for estructura in estructuras }
 
-valores = ["1 base no tech", "2 base no tech", "3 base no tech"]
+estructuras_tiempo = [valor+"_tiempo" for valor in estructuras]
 
-estructuras = ["Pylon",
-               "Gateway",
-               "Assimilator",
-               "Nexus",
-               "CyberneticsCore",
-               "RoboticsFacility",
-               "RoboticsBay",
-               "TemplarArchive",
-               "DarkShrine",
-               "Forge",
-               "TwilightCouncil",
-               "Stargate",
-               "FleetBeacon",
-               "PhotonCannon"]
+unidades = [
+            "Overlord",
+            "Overseer",
+            "Drone",
+            "Zergling",
+            "Queen",
+            "Roach",
+            "Hydralisk",
+            "Baneling",
+            "Mutalisk",
+            "Corruptor",
+            "Infestor",
+            "Broodlord",
+            "Ravager",
+            "Swarmhost"
+]
 
-estructuras_tiempo = ["Pylon_tiempo",
-               "Gateway_tiempo",
-               "Assimilator_tiempo",
-               "Nexus_tiempo",
-               "CyberneticsCore_tiempo",
-               "RoboticsFacility_tiempo",
-               "RoboticsBay_tiempo",
-               "TemplarArchive_tiempo",
-               "DarkShrine_tiempo",
-               "Forge_tiempo",
-               "TwilightCouncil_tiempo",
-               "Stargate_tiempo",
-               "FleetBeacon_tiempo",
-               "PhotonCannon_tiempo"]
-
-unidades = ["Zealot",
-           "Probe",
-           "Adept",
-           "Stalker",
-           "Sentry",
-           "HighTemplar",
-           "DarkTemplar",
-           "VoidRay",
-           "Phoenix",
-           "Oracle",
-           "Carrier",
-           "Tempest",
-           "Archon",
-           "WarpPrism",
-           "Colossus",
-           "Disruptor",
-           "Immortal",
-           "Observer"]
-
-mapeo_unidades_tiempo ={unidad:numero for numero,unidad in enumerate(unidades,100)}
+mapeo_unidades_tiempo ={unidad:numero for numero,unidad in enumerate(unidades,1)}
 #print(mapeo_unidades_tiempo.items())
 
-unidades_tiempo = ["Zealot_tiempo",
-           "Probe_tiempo",
-           "Adept_tiempo",
-           "Stalker_tiempo",
-           "Sentry_tiempo",
-           "HighTemplar_tiempo",
-           "DarkTemplar_tiempo",
-           "VoidRay_tiempo",
-           "Phoenix_tiempo",
-           "Oracle_tiempo",
-           "Carrier_tiempo",
-           "Tempest_tiempo",
-           "Archon_tiempo",
-           "WarpPrism_tiempo",
-           "Colossus_tiempo",
-           "Disruptor_tiempo",
-           "Immortal_tiempo",
-           "Observer_tiempo"]
+unidades_tiempo = {llave+"_tiempo" for llave in unidades }
 
 mejoras = [ 
-            "ResearchFluxVanes",
-            "ResearchCharge",
-            "ResearchPsiStormTech",
-            "ResearchBlink",
-            "ResearchAdeptPiercingAttack",
-            "ResearchGraviticDrive",
-            "ResearchExtendedThermalLance",
-            "ResearchWarpGate",
-            "ResearchAnionPulseCrystals",
-            "ResearchGraviticBoosters",
-            "UpgradeGroundWeapons1",
-            "UpgradeGroundWeapons2",
-            "UpgradeGroundWeapons3",
-            "UpgradeGroundArmor1",
-            "UpgradeGroundArmor2",
-            "UpgradeGroundArmor3",
-            "UpgradeAirWeapons1",
-            "UpgradeAirWeapons2",
-            "UpgradeAirWeapons3",
-            "UpgradeAirArmor1",
-            "UpgradeAirArmor2",
-            "UpgradeAirArmor3",
-            "UpgradeShields1",
-            "UpgradeShields2",
-            'UpgradesShields3',
-            'UpgradeToMothership',
-            'CancelUpgradeToMothership',
-            'ResearchDarkTemplarBlinkUpgrade'
+            "UpgradeToLair",
+            "CancelUpgradeToLair",
+            "UpgradeToLurkerDenMP",
+            "CancelUpgradeToLurkerDenMP",
+            "UpgradeToHive",
+            "CancelUpgradeToHive",
+            "UpgradeToGreaterSpire",
+            "CancelUpgradeToGreaterSpire",
+
+            "EvolveChitinousPlating",
+            "EvolveAdrenalGlands",
+            "EvolvePneumatizedCarapace",
+            "EvolveMetabolicBoost",
+            "EvolveCentrifugalHooks",
+            "EvolvePathogenGlands",
+            "EvolveBurrow",
+            "EvolveTunnelingClaws",
+            "EvolveGlialReconstitution",
+            "EvolveFlyerAttacks1",
+            "EvolveFlyerAttacks2",
+            "EvolveFlyerAttacks3",
+            "EvolveFlyerCarapace1",
+            "EvolveFlyerCarapace2",
+            "EvolveFlyerCarapace3",
+            "EvolveNeuralParasite",
+
+            "ResearchEvolveMuscularAugments",
+
+            "ResearchZergMeleeWeaponsLevel1",
+            "ResearchZergMeleeWeaponsLevel2",
+            "ResearchZergMeleeWeaponsLevel3",
+
+            "ResearchZergGroundArmorsLevel1",
+            "ResearchZergGroundArmorsLevel2",
+            "ResearchZergGroundArmorsLevel3",
+
+            "ResearchZergMissileWeaponsLevel1",
+            "ResearchZergMissileWeaponsLevel2",
+            "ResearchZergMissileWeaponsLevel3",
           ]
 
-mapeo_mejora_numero = {mejora: numero for numero,mejora in enumerate(mejoras,50)}
 
-
-# In[19]:
-
-
-estructuras_reducido = [
-               "Pylon",
-               "Gateway",
-               "Assimilator",
-               "Nexus",
-               "RoboticsFacility",
-               "RoboticsBay",
-               "DarkShrine",
-               "TwilightCouncil",
-               "Stargate",
-               "FleetBeacon"]
-
-builds_objetivo = [
-    
-    "2 base DT",
-    "2 base Glaives",
-    "2 base Robo",
-    "2 base Twilight",
-    "2 base Stargate",
-    "3 base DT",
-    "3 base Fleet Beacon",
-    "3 base Glaives",
-    "3 base RoboBay",
-    "3 base Stargate",
-    "3 base Twilight"
-]
-
-builds_poco_presentes = [
-    "1 base Blink",
-    "1 base Glaives",
-    "1 base Blink 7+Gates",
-    "1 base Fleet Beacon",
-    "1 base Glaives 7+Gates",
-    "1 base RoboBay",
-    "1 base Twilight 7+Gates",
-    "2 base Blink 7+Gates",
-    "3 base",
-    "3 base +1 ground",
-]
-
-mapeo_numero_estructura = {
-    
-    "Pylon": 1,
-    "Assimilator": 2,
-    "Gateway": 3,
-    "Forge": 4,
-    "Nexus": 5,
-    "RoboticsFacility": 6,
-    "RoboticsBay": 7,
-    "DarkShrine": 8,
-    "TwilightCouncil": 9,
-    "Stargate": 10,
-    "TemplarArchives": 11,
-    "CyberneticsCore": 12,
-    "PhotonCannon": 13,
-    "FleetBeacon":14,
-}
-
-mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
-mapeo_estructura_canal = {estructura:0 for estructura in estructuras}
-
-tier_1 = ["Stargate",'TwilightCouncil','RoboticsFacility','DarkShrine','TemplarArchives']
-
-estructuras_permutables = [
-    "Gateway",
-    "CyberneticsCore",
-    "RoboticsFacility",
-    "RoboticsBay",
-    "TemplarArchive",
-    "DarkShrine",
-    "Forge",
-    "TwilightCouncil",
-    "Stargate",
-    "FleetBeacon",
-    "PhotonCannon"
-]
+mapeo_mejora_numero = {mejora: numero for numero,mejora in enumerate(mejoras,100)}
 
 mapeo_numero_estructuras_permutables = {estructura:numero for numero,estructura in enumerate(estructuras_permutables)}
 mapeo_estructuras_permutables_numero = {numero:estructura for estructura,numero in mapeo_numero_estructuras_permutables.items()}
+
+#aqui se extraen las builds que tienen suficientes ejemplos para el entrenamiento
+
+valores = df["Label"].value_counts()
+
+for llave, valor in valores.items():
+    if valor < 500:
+        del valores[llave]
+        
+#del valores["1 Hatch "] 
+#del valores["2 Hatch "] 
+#del valores["3 Hatch "] 
+
+
+
+builds = df[df["Label"].isin(valores.keys())]
+
+builds_objetivo = builds.Label.unique().tolist()
+'''
+for build in builds_objetivo: 
+    print(build)
+print(len(builds_objetivo))
+'''
+tier_1 = ["ResearchZergMeleeWeaponsLevel1","ResearchZergMissileWeaponsLevel1","EvolveBurrow","EvolveGlialReconstitution","EvolveCentrifugalHooks"]
+#tier_1 = ["Spire",'HydraliskDen','InfestationPit',"UpgradeToLurkerDenMP"]
 
 
 # In[8]:
@@ -518,14 +454,22 @@ X_train, X_test, y_train, y_test = train_test_split(dataset,dummy_y,test_size=0.
 
 
 from shutil import make_archive
+import bz2
+import pickle
 
-make_archive("X_train","zip",X_train)
+ofile = bz2.BZ2File("X_train","wb")
+pickle.dump(X_train,ofile)
+ofile.close()
 
-make_archive("X_test","zip",X_test)
+ofile = bz2.BZ2File("X_test","wb")
+pickle.dump(X_test,ofile)
+ofile.close()
 
-make_archive("y_train","zip",y_train)
+with open("y_train","wb") as arc:
+    pickle.dump(y_train,arc)
 
-make_archive("y_test","zip",y_test)
+with open("y_test","wb") as arc:
+    pickle.dump(y_test,arc)
 
 
 
