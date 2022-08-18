@@ -279,6 +279,24 @@ def biyeccionCoordenadas(x,y):
 
 # In[10]:
 
+def interloperNatural(x,y):
+    #estas son coordenadas originales del mapa, deben ser contrastadas con las coordenadas antes de ser transformadas
+    y_maximo = 68
+    y_minimo = 40
+    x_minimo = 112
+    x_maximo = 135
+    #aproximacion a un cuadraddo
+    
+    if x >= x_minimo and y >= y_minimo and  x <= x_maximo and y <= y_maximo:
+        return True
+    else:
+        return False
+        
+def mascaraNatural(x,y):
+    x-=112
+    y-=40
+    return x,y
+
 
 import math
 
@@ -307,12 +325,16 @@ def ubicarEstructura(dataset, nfila, fila, estructura):
         if x < 0 or y < 0:
             flag_estructura_negativa = True
         
+
         x = abs(x)
         y = abs(y)
-        x,y = mascaraCoordenadas(x,y,"Interloper")
-    
-        if x < 0 or y > 68: # x menor a cero implica que la estructura esta a la izquierda de la main
-              continue              # y mayor a 68 implica que la estructura esta sobre el limite superior de la natural
+
+        natural = interloperNatural(x,y) 
+        
+        if not natural:
+            continue
+        
+        x,y = mascaraNatural(x,y)
         
         x,y = biyeccionCoordenadas(x,y)
         x = int(x)
@@ -451,8 +473,8 @@ def transformarFilaEnInputConvolucional(df):
     canales = len(mapeo_numero_estructura.keys())
     #ancho = 340 #170*2
     #alto = 340 #150*2 - ahora con padding para que sea 340*340
-    ancho = 80
-    alto = 137
+    ancho = 46
+    alto = 56
     total = df.shape[0]
     dataset = np.zeros((total,2,alto,ancho))
     df = df.reset_index()
