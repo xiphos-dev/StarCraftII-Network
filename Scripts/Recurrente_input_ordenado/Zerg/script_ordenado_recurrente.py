@@ -192,7 +192,7 @@ df = df[df["Label"].isin(builds_objetivo)]
 #df["Primer_tech"] = df.apply(lambda fila: primeraTech(fila,336), axis=1)
 df.head()
 
-X = df.drop(["Label"], axis=1).drop("Replay", axis=1).drop(columnas_coordenadas, axis=1).drop(estructuras_tiempo, axis=1).drop(columnas_excepcion)
+X = df.drop(["Label"], axis=1).drop("Replay", axis=1).drop(columnas_coordenadas, axis=1).drop(estructuras_tiempo, axis=1).drop(columnas_excepcion, axis=1)
 X["Drone"] = df.apply(lambda fila: 12 if fila["Drone"] < 12 else fila["Drone"], axis=1)
 X.head()
 
