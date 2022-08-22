@@ -183,7 +183,7 @@ def primeraTech(fila, cota_tiempo=336):
 columnas_coordenadas = [col for col in df.columns if "_x" in col or "_y" in col]
 columnas_tiempo = [col for col in df.columns if "_t" in col]
 
-columnas_excepcion = [col for col in df.columns if "Hive" in col or "Lair" in col or "GreaterSpire" in col]
+columnas_excepcion = [col for col in df.columns if "Hive" in col or "Lair" in col or "GreaterSpire" in col or "Nydus" in col]
 columnas_excepcion = [col for col in columnas_excepcion if col not in mejoras]
 
 
