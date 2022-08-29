@@ -10,11 +10,12 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from scipy.sparse import hstack
 import numpy as np
+import pickle
 
+with open("encoder","rb") as arc:
+    encoder = pickle.load(arc)
 
-# In[2]:
-
-
+'''
 ruta = "../../../"
 archivo = "interloper_terran.csv"
 file = ruta+archivo
@@ -23,22 +24,46 @@ file = ruta+archivo
 
 df = pd.read_csv(file, sep=',', dtype={"Label": str})
 #df.head(20)
-
+'''
 
 
 ruta = "./"
-archivo = "extension_dataset_p_interloper.csv"
+archivo = "extension_dataset_t_interloper.csv"
 file = ruta+archivo
 
-
-df2 = pd.read_csv(file, sep=',', dtype={"Label": str})
-
-df = df.append(df2, ignore_index = True)
-
-from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import np_utils
 
+'''
+df_encoder = pd.read_csv(file, sep=',', dtype={"Label": str}, usecols=["Label"])
+y_completo = df_encoder["Label"]
+
+encoder = LabelEncoder()
+encoder.fit(y_completo)
+encoder_mapeo = dict(zip(encoder.transform(encoder.classes_), encoder.classes_))
+print(encoder_mapeo)
+encoded_Y = encoder.transform(y_completo)
+# convert integers to dummy variables (i.e. one hot encoded)
+dummy_y = np_utils.to_categorical(encoded_Y)
+
+categorias = dummy_y.shape[1]
+
+
+params = encoder.get_params(y_completo) 
+
+del df_encoder
+del y_completo
+
+'''
+
+numero = "4"
+cota_inferior = 200000
+cota_superior = 600000
+
+df = pd.read_csv(file, sep=',', dtype={"Label": str}, skiprows=range(cota_inferior,cota_superior), nrows=400000, engine="python")
+#df.head()
+
+print("Leido")
 
 estructuras = [            
             "CommandCenter",
@@ -151,22 +176,22 @@ estructuras_permutables = [
 ]
 
 
-mapeo_numero_estructura = {elemento:numero for numero,elemento in enumerate(estructuras_permutables)}
+#mapeo_numero_estructura = {elemento:numero for numero,elemento in enumerate(estructuras_permutables)}
 
 
-mapeo_estructura_canal = {estructura:0 for estructura in estructuras_permutables }
-mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
+mapeo_estructura_canal = {estructura:0 for estructura in estructuras }
+#mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
 
 #mapeo_estructura_addons_canal = {estructura: 1 for estructura in estructuras_addons}
 #mapeo_estructura_canal.update(mapeo_estructura_addons_canal)
 
-mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
+#mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
 
 
 
 
-mapeo_numero_estructuras_permutables = {estructura:numero for numero,estructura in enumerate(estructuras_permutables)}
-mapeo_estructuras_permutables_numero = {numero:estructura for estructura,numero in mapeo_numero_estructuras_permutables.items()}
+mapeo_numero_estructura = {estructura:numero for numero,estructura in enumerate(estructuras)}
+mapeo_estructuras_numero = {numero:estructura for estructura,numero in mapeo_numero_estructura.items()}
 
 #tier_1 = ["Factory","FactoryReactor","FactoryTechLab",'Staport','StarportReactor','StaportTechlab']
 tier_1 = ["ResearchConcussiveShells","ResearchStimpack","ResearchInfernalPreIgniter","ResearchCombatShield","ResearchCloakingField","ResearchLiberatorAGRangeUpgrade"]
@@ -252,7 +277,7 @@ def ubicarEstructura(dataset, nfila, fila, estructura):
                 print(x)
                 print(y)
                 print("*"*10)
-            dataset[nfila][canal][y][x] = mapeo_estructura_numero[estructura]
+            dataset[nfila][canal][y][x] = mapeo_numero_estructura[estructura]
         #print("-"*20 + campo)
     return dataset
             
@@ -379,7 +404,7 @@ def transformarFilaEnInputConvolucional(df):
     df = df.reset_index()
     for index, row in df.iterrows():
         #print(index)
-        for estructura in estructuras_reducido:
+        for estructura in estructuras_permutables:
             dataset = ubicarEstructura(dataset,index,row,estructura)
     return dataset
 
@@ -426,12 +451,13 @@ dataset = transformarFilaEnInputConvolucional(X)
 
 # In[18]:
 
-
+'''
 # encode class values as integers
 encoder = LabelEncoder()
 encoder.fit(y)
 encoder_mapeo = dict(zip(encoder.transform(encoder.classes_), encoder.classes_))
 print(encoder_mapeo)
+'''
 encoded_Y = encoder.transform(y)
 # convert integers to dummy variables (i.e. one hot encoded)
 dummy_y = np_utils.to_categorical(encoded_Y)
@@ -443,25 +469,29 @@ params = encoder.get_params(y)
 
 
 
-X_train, X_test, y_train, y_test = train_test_split(dataset,dummy_y,test_size=0.20, random_state=106)
+X_train, X_test, y_train, y_test = train_test_split(dataset[cota_inferior:][:][:][:],dummy_y[cota_inferior:][:],test_size=0.20, random_state=106)
 
 
 from shutil import make_archive
 import bz2
 import pickle
 
-ofile = bz2.BZ2File("X_train","wb")
+
+print(X_train.shape)
+ofile = bz2.BZ2File("X_train_"+numero,"wb")
 pickle.dump(X_train,ofile)
 ofile.close()
 
-ofile = bz2.BZ2File("X_test","wb")
+ofile = bz2.BZ2File("X_test_"+numero,"wb")
 pickle.dump(X_test,ofile)
 ofile.close()
 
-with open("y_train","wb") as arc:
+with open("y_train_"+numero,"wb") as arc:
     pickle.dump(y_train,arc)
 
-with open("y_test","wb") as arc:
+with open("y_test_"+numero,"wb") as arc:
     pickle.dump(y_test,arc)
 
+#with open("encoder","wb") as arc:
+ #   pickle.dump(encoder,arc)
 
