@@ -1,20 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# 
-
-# In[1]:
-
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from scipy.sparse import hstack
 import numpy as np
+import pickle
 
+with open("encoder","rb") as arc:
+    encoder = pickle.load(arc)
 
-# In[2]:
-
-
+'''
 ruta = "../../../"
 archivo = "interloper_zerg.csv"
 file = ruta+archivo
@@ -24,16 +20,28 @@ file = ruta+archivo
 df = pd.read_csv(file, sep=',', dtype={"Label": str})
 #df.head(20)
 
-
+'''
 
 ruta = "./"
 archivo = "extension_dataset_z_interloper.csv"
 file = ruta+archivo
 
 
-df2 = pd.read_csv(file, sep=',', dtype={"Label": str})
+#df2 = pd.read_csv(file, sep=',', dtype={"Label": str})
 
-df = df.append(df2, ignore_index = True)
+'''
+y_completo = df2["Label"]
+
+from sklearn.preprocessing import LabelEncoder
+encoder = LabelEncoder()
+encoder.fit(y_completo)
+
+del y_completo
+del df2
+'''
+df = pd.read_csv(file, sep=",", dtype={"Label": str}, skiprows=range(1,600000), nrows=200000, engine="python")
+
+#df = df.append(df2, ignore_index = True)
 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
@@ -259,7 +267,7 @@ def ubicarEstructura(dataset, nfila, fila, estructura):
                 print(x)
                 print(y)
                 print("*"*10)
-            dataset[nfila][canal][y][x] = mapeo_estructura_numero[estructura]
+            dataset[nfila][canal][y][x] = mapeo_numero_estructura[estructura]
         #print("-"*20 + campo)
     return dataset
             
@@ -386,7 +394,7 @@ def transformarFilaEnInputConvolucional(df):
     df = df.reset_index()
     for index, row in df.iterrows():
         #print(index)
-        for estructura in estructuras_reducido:
+        for estructura in estructuras_permutables:
             dataset = ubicarEstructura(dataset,index,row,estructura)
     return dataset
 
@@ -435,10 +443,12 @@ dataset = transformarFilaEnInputConvolucional(X)
 
 
 # encode class values as integers
+'''
 encoder = LabelEncoder()
 encoder.fit(y)
+'''
 encoder_mapeo = dict(zip(encoder.transform(encoder.classes_), encoder.classes_))
-print(encoder_mapeo)
+#print(encoder_mapeo)
 encoded_Y = encoder.transform(y)
 # convert integers to dummy variables (i.e. one hot encoded)
 dummy_y = np_utils.to_categorical(encoded_Y)
@@ -457,20 +467,20 @@ from shutil import make_archive
 import bz2
 import pickle
 
-ofile = bz2.BZ2File("X_train","wb")
+ofile = bz2.BZ2File("X_train_4","wb")
 pickle.dump(X_train,ofile)
 ofile.close()
 
-ofile = bz2.BZ2File("X_test","wb")
+ofile = bz2.BZ2File("X_test_4","wb")
 pickle.dump(X_test,ofile)
 ofile.close()
 
-with open("y_train","wb") as arc:
+with open("y_train_4","wb") as arc:
     pickle.dump(y_train,arc)
 
-with open("y_test","wb") as arc:
+with open("y_test_4","wb") as arc:
     pickle.dump(y_test,arc)
 
-
-
+#with open("encoder","wb") as arc:
+ #   pickle.dump(encoder,arc)
 

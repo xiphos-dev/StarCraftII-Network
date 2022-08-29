@@ -19,17 +19,17 @@ with open("X_test","rb") as arc:
     X_test = pickle.load(arc)
 '''
 
-with open("y_train","rb") as arc:
+with open("y_train_1","rb") as arc:
     y_train = pickle.load(arc)
 
-with open("y_test","rb") as arc:
+with open("y_test_1","rb") as arc:
     y_test = pickle.load(arc)
 
-ifile = bz2.BZ2File("X_train","rb")
+ifile = bz2.BZ2File("X_train_1","rb")
 X_train = pickle.load(ifile)
 ifile.close()
 
-ifile = bz2.BZ2File("X_test","rb")
+ifile = bz2.BZ2File("X_test_1","rb")
 X_test = pickle.load(ifile)
 ifile.close()
 
@@ -79,7 +79,7 @@ def crearRedConvolucional(forma,categorias):
     return model
 
 
-def crearRedConvolucionalSinPadding(forma,categorias:
+def crearRedConvolucionalSinPadding(forma,categorias):
     model = models.Sequential()
     model.add(layers.Conv2D(8, 3, activation='relu', data_format="channels_first", input_shape=forma))
     model.add(layers.MaxPooling2D(data_format="channels_first"))
@@ -88,7 +88,7 @@ def crearRedConvolucionalSinPadding(forma,categorias:
     model.add(layers.Conv2D(8, 3, data_format="channels_first", activation='relu'))
     model.add(layers.MaxPooling2D(data_format="channels_first"))
     model.add(layers.Flatten(data_format="channels_first"))
-    model.add(layers.Dropout(.15))
+   # model.add(layers.Dropout(.15))
     #model.add(layers.Dense(1, activation='relu'))
     model.add(layers.Dense(512))
     model.add(layers.Dense(categorias, activation="softmax"))
@@ -106,11 +106,11 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.callbacks import ModelCheckpoint
 import tensorflow.keras as ks
 
-ruta_modelo = "../../../Modelo_convolucional/modelo_entrenado_convolucional"
+ruta_modelo = "./Modelo88f_sinpadding_z"
 checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='auto')
 lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
-modelo.compile(loss=keras.losses.CategoricalCrossentropy(), 
+modelo.compile(loss=ks.losses.CategoricalCrossentropy(), 
                      optimizer=ks.optimizers.Adam(lr=lr, decay=5e-4), 
                      metrics=["accuracy"]
                      #metrics=[tf.keras.metrics.CategoricalCrossentropy()]
@@ -119,12 +119,12 @@ modelo.compile(loss=keras.losses.CategoricalCrossentropy(),
 historia= modelo.fit(
             x=X_train, 
             y=y_train, 
-            batch_size=256, 
-            epochs=50, 
+            batch_size=64, 
+            epochs=70, 
             verbose=True, 
             validation_data=(X_test, y_test),
             callbacks=[checkpoint_best, lrschedule_1])
 
 
-with open('../../../Modelo_convolucional/historial_convolucional_z', 'wb') as file_pi:
+with open('./historial88f_sinpadding_z', 'wb') as file_pi:
     pickle.dump(historia.history, file_pi)

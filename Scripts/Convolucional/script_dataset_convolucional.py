@@ -323,7 +323,7 @@ def ubicarEstructura(dataset, nfila, fila, estructura):
                 print(x)
                 print(y)
                 print("*"*10)
-            dataset[nfila][canal][y][x] = mapeo_estructura_numero[estructura]
+            dataset[nfila][canal][y][x] = mapeo_numero_estructura[estructura]
         #print("-"*20 + campo)
     return dataset
             
@@ -516,16 +516,25 @@ params = encoder.get_params(y)
 
 X_train, X_test, y_train, y_test = train_test_split(dataset,dummy_y,test_size=0.20, random_state=106)
 
-
+import pickle
+import bz2
 from shutil import make_archive
 
-make_archive("X_train","zip",X_train)
+ofile = bz2.BZ2File("X_train","wb")
+pickle.dump(X_train,ofile)
+ofile.close()
 
-make_archive("X_test","zip",X_test)
+ofile = bz2.BZ2File("X_test","wb")
+pickle.dump(X_test,ofile)
+ofile.close()
 
-make_archive("y_train","zip",y_train)
+with open("y_train","wb") as arc:
+    pickle.dump(y_train,arc)
 
-make_archive("y_test","zip",y_test)
+with open("y_test","wb") as arc:
+    pickle.dump(y_test,arc)
+
+
 
 
 
