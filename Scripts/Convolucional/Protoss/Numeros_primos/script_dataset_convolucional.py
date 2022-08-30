@@ -267,7 +267,7 @@ estructuras_permutables = [
     "PhotonCannon"
 ]
 
-mapeo_numero_estructuras_permutables = {estructura:numero for numero,estructura in gen_primes(estructuras_permutables)}
+mapeo_numero_estructuras_permutables = {estructura:numero for numero,estructura in gen_primes(estructuras)}
 mapeo_estructuras_permutables_numero = {numero:estructura for estructura,numero in mapeo_numero_estructuras_permutables.items()}
 
 
