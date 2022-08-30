@@ -56,9 +56,9 @@ def gen_primes(listado):
     
     # The running integer that's checked for primeness
     q = 2
-    maximo = len(listado)
+    cantidad = len(listado)
     item_actual = 0
-    while q <= maximo :
+    while cantidad > 0 :
         if q not in D:
             # q is a new prime.
             # Yield it and mark its first multiple that isn't
@@ -66,6 +66,8 @@ def gen_primes(listado):
             # 
             yield q,listado[item_actual]
             D[q * q] = [q]
+            item_actual += 1
+            cantidad -= 1
         else:
             # q is composite. D[q] is the list of primes that
             # divide it. Since we've reached q, we no longer
@@ -78,7 +80,6 @@ def gen_primes(listado):
             del D[q]
         
         q += 1
-        item_actual += 1
 
 numero = "1"
 cota_inferior = 200000
@@ -138,7 +139,7 @@ estructuras_permutables = [
     
 ]
 
-mapeo_numero_estructura = {estructura:numero for numero,estructura in gen_primes(estructuras_permutables)}
+mapeo_numero_estructura = {estructura:numero for numero,estructura in gen_primes(estructuras)}
 
 mapeo_estructura_numero = {valor: llave for llave,valor in mapeo_numero_estructura.items()}
 mapeo_estructura_canal = {estructura:0 for estructura in estructuras }
