@@ -1113,54 +1113,54 @@ print(categorias)
 
 X_train_estructuras,X_test_estructuras,X_train_unidades, X_test_unidades, X_train_mejoras, X_test_mejoras,y_train, y_test=  train_test_split(x_batch_rnn,x_batch_rnn_unidades, x_batch_rnn_mejoras,dummy_y_mid,test_size=0.20, random_state=59)
 
-ruta = "../../data_rnn_tripleinput/X_train_estructuras"
+ruta = "X_train_estructuras"
 
 with open(ruta,"wb") as arc:
     pickle.dump(X_train_estructuras,arc)
 
-ruta = "../../data_rnn_tripleinput/X_test_estructuras"
+ruta = "X_test_estructuras"
 
 with open(ruta,"wb") as arc:
     pickle.dump(X_test_estructuras,arc)
 
-ruta = "../../data_rnn_tripleinput/X_train_unidades"
+ruta = "X_train_unidades"
 
 with open(ruta,"wb") as arc:
     pickle.dump(X_train_unidades,arc)
 
-ruta = "../../data_rnn_tripleinput/X_test_unidades"
+ruta = "X_test_unidades"
 
 with open(ruta,"wb") as arc:
     pickle.dump(X_test_unidades,arc)
 
-ruta = "../../data_rnn_tripleinput/X_train_mejoras"
+ruta = "X_train_mejoras"
 
 with open(ruta,"wb") as arc:
     pickle.dump(X_train_mejoras,arc)
 
-ruta = "../../data_rnn_tripleinput/X_test_mejoras"
+ruta = "X_test_mejoras"
 
 with open(ruta,"wb") as arc:
     pickle.dump(X_test_mejoras,arc)
 
-ruta = "../../data_rnn_tripleinput/y_train"
+ruta = "y_train"
 with open(ruta,"wb") as arc:
     pickle.dump(y_train,arc)
 
-ruta = "../../data_rnn_tripleinput/y_test"
+ruta = "y_test"
 with open(ruta,"wb") as arc:
     pickle.dump(y_test,arc)
 
 
-ruta = "../../data_rnn_tripleinput/vocabulario"
+ruta = "vocabulario"
 
 with open(ruta,"wb") as arc:
     pickle.dump(vocabulario,arc)
 
-ruta = "../../data_rnn_tripleinput/vocabulario_unidades"
+ruta = "vocabulario_unidades"
 with open(ruta,"wb") as arc:
     pickle.dump(vocabulario_unidades,arc)
 
-ruta = "../../data_rnn_tripleinput/vocabulario_mejoras"
+ruta = "vocabulario_mejoras"
 with open(ruta,"wb") as arc:
     pickle.dump(vocabulario_mejoras,arc)
