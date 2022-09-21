@@ -1099,6 +1099,163 @@ def inputRecurrenteUnicoOrdenado(df,y_target,main,natural,tiempo_limite):#ordena
     
     return df,x_batch_rnn, y_target, vacio_mapa, vocabulario
 
+def inputRecurrenteUnicoOrdenadoB(df,y_target,main,natural,tiempo_limite,skip_probes=False):#Esta función retorna un único vector por ejemplo, incluyendo padding para los casos en que corresponda
+    #columnas = [col for col in df.columns if "_x_" in col or "_y_" in col]
+    tiempos = [col for col in df.columns if "_t" in col and col != "Primer_tech"]
+    upgrades = [col for col in df.columns if col in mejoras]
+    #print(len(tiempos))
+    output = []
+    #output_rnn_unidades=[]
+    #output_rnn_mejoras = []
+    vocabulario = []
+    #vocabulario_unidades = []
+    #vocabulario_mejoras = []
+    #largo = 30 #336 tiempo
+    largo_mejoras = len(mejoras)
+    largo = 300 
+    largo_unidades = 200 + largo + largo_mejoras
+    vacio_mapa=[]
+    for index, row in df.iterrows():
+        #fila=np.full((15,2), ["999",999],dtype=dtype)
+        #fila=np.full((15,2), 999, dtype=object)
+        #print("Going:"+str(index))
+        vacio = True
+        vacio_unidades = True
+        vacio_mejoras = True
+        #fila_estructuras=[[0, 999] for _,_ in enumerate(range(largo))]
+        fila_unidades=[[0, 999] for _,_ in enumerate(range(largo_unidades))]
+        #fila_mejoras=[[0, 999] for _,_ in enumerate(range(largo_mejoras))]
+        fila_final=[]
+        fila_final_mejoras=[]
+        fila_final_unidades=[]
+        #fila = sorted(fila, key=lambda x: x[1], reverse=True)
+       # print(fila)
+        pos=0
+        pos_unidades=0
+        i=0
+        n_fila = 0
+        while i < len(tiempos):
+            #x = row[columnas[i]]
+            #y = row[columnas[i+1]
+            frases = tiempos[i].split("_")
+            estructura = frases[0]
+            string_end = frases[1]
+            if estructura in tier_1: 
+                i+=1
+                continue
+            tiempo = row[tiempos[i]]
+            #print(tiempos[i]+":"+str(tiempo))
+            if skip_probes:
+                if estructura == "Probe":
+                    #print("Probe detectada")
+                    i+=1
+                    continue
+            '''
+            if string_end == "tiempo":
+                if estructura == "Probe":
+                    #print("Probe detectada")
+                    i+=1
+                    continue #no contamos probes por el problema de inconsistencia al comienzo: algunos seleccionan las 12 probes, otros no
+            '''
+            #frases = tiempos[t].split("_")
+            #estructura = frases[0]
+            #string_end = frases[1]
+            
+            #procesar listado de unidades
+            
+            if string_end == "tiempo":
+                unidad = mapeo_unidades_tiempo[estructura]
+                if (isinstance(tiempo,str)):
+                    tiempo = tiempo.strip("[").strip("]")
+                    tiempo = tiempo.split(",")
+                    for elemento in tiempo:
+                        #print(str(unidad)+":"+elemento)
+                        if int(elemento) > tiempo_limite:
+                            break
+                        fila_unidades[pos] = [unidad,int(elemento)]
+                        pos+=1
+                        vacio_unidades = False
+                else:
+                    if tiempo <= tiempo_limite:
+                        fila_unidades[pos] = [unidad,int(tiempo)]
+                        pos+=1
+                        vacio_unidades = False
+            elif int(tiempo) > tiempo_limite:
+                i+=1
+                continue
+            else:
+                estructura = mapeo_numero_estructura[estructura]
+                fila_unidades[pos] = [estructura, int(tiempo)]
+                pos+=1
+                vacio = False
+                    #print(estructura+"*")
+                    
+                    #print(tiempos[t])
+            i+=1
+        pos_mejora=0
+        for k in range(len(mejoras)):
+            mejora = mejoras[k]
+            tiempo = row[mejora]
+            if tiempo <= tiempo_limite:
+                fila_unidades[pos][0] = mapeo_mejora_numero[mejora]
+                fila_unidades[pos][1] = tiempo
+                pos+=1
+                vacio_mejoras=False
+        #print(fila)
+        if not(vacio) or not(vacio_unidades) or not(vacio_mejoras):
+            salida = []
+            
+            '''
+            fila_estructuras = sorted(fila_estructuras, key=lambda x: x[1])
+                
+            for posicion in range(len(fila_estructuras)):
+                if fila_estructuras[posicion][1] == 999:
+                    fila_estructuras[posicion][1] = 0
+                    
+                #fila_denso.append(fila_estructuras[posicion][0])
+                #fila_denso.append(fila_estructuras[posicion][1])
+                
+                #output.append(fila_estructuras[posicion][0])
+                #fila_final.append(fila[posicion][1])
+                vocabulario.append(fila_estructuras[posicion][0])
+                #vocabulario.append(fila[posicion][1])
+            '''        
+            fila_unidades = sorted(fila_unidades, key=lambda x: x[1])
+            fila_output = []
+            for posicion in range(len(fila_unidades)):
+                if fila_unidades[posicion][1] == 999:
+                    fila_unidades[posicion][1] = 0
+                vocabulario.append(fila_unidades[posicion][0])
+                valor = 0
+                if fila_unidades[posicion][1] != 0:
+                    valor = fila_unidades[posicion][0]
+                fila_output.append(valor)
+            output.append(fila_output)
+            n_fila +=1
+            '''      
+            fila_mejoras = sorted(fila_mejoras, key=lambda x: x[1])
+
+            
+            for posicion in range(len(fila_mejoras)):
+                if fila_mejoras[posicion][1] == 999:
+                    fila_mejoras[posicion][1] = 0
+                output.append(fila_mejoras[posicion][0])
+                vocabulario.append(fila_mejoras[posicion][0])
+            #print(len(fila_final_mejoras))
+            #output.append([x[0] for x in fila])
+            '''  
+        else:
+            vacio_mapa.append(index)
+            y_target=y_target.drop(index)
+            df = df.drop(index)
+    vocabulario = convertirATupla(vocabulario)
+    vocabulario = set(vocabulario)
+
+    
+    x_batch_rnn = np.asarray(output)
+    
+    return df,x_batch_rnn, y_target, vacio_mapa, vocabulario
+
 def transformarOneHot(y):
 # encode class values as integers
     encoder = LabelEncoder()
@@ -1112,7 +1269,7 @@ def transformarOneHot(y):
 
 
 
-_,x_batch_rnn, y_mid, vacio_mapa, vocabulario = inputRecurrenteUnicoOrdenado(X,y2,False,False,700)
+_,x_batch_rnn, y_mid, vacio_mapa, vocabulario = inputRecurrenteUnicoOrdenadoB(X,y2,False,False,700)
 
 encoder_mid, dummy_y_mid = transformarOneHot(y_mid)
 categorias = dummy_y_mid.shape[1]

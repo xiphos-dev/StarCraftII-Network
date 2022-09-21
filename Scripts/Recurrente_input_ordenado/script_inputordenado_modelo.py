@@ -47,13 +47,14 @@ lr = 5e-3
 
 print(X_train.shape[1])
 
-def modeloRNN(num_unidades,vocab,embedding_dim=256,categorias=2):
+def modeloRNN(num_unidades,vocab,timesteps,categorias=2):
     model = keras.Sequential()
-    model.add(layers.Embedding(vocab, embedding_dim, mask_zero=True, input_length=input_shape_rnn))
+    #model.add(layers.Embedding(vocab, 100, mask_zero=True, input_length=input_shape_rnn))
 
     #model.add(layers.GRU(32))
     
-    model.add(layers.LSTM(100))
+    model.add(layers.Masking(mask_value=0, input_shape=(timesteps,1)))
+    model.add(layers.LSTM(10))
     #model.add(layers.SimpleRNN(10))
 
     #model.add(layers.Dense(128, activation='relu'))
@@ -64,7 +65,7 @@ def modeloRNN(num_unidades,vocab,embedding_dim=256,categorias=2):
     model.summary()
     return model
 
-model = modeloRNN(X_train.shape[1],max(vocabulario)+1,256,len(encoder_mid.values()))
+model = modeloRNN(X_train.shape[1],max(vocabulario)+1,528,len(encoder_mid.values()))
 
 
 #ruta_modelo = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/Modelo_recurrente/Input_unico_midgame")
@@ -88,5 +89,5 @@ historia = model.fit(
 
 
 
-with open('./historia_input_unico', 'wb') as file_pi:
+with open('./Historial_referencia/historia_input_unico', 'wb') as file_pi:
     pickle.dump(historia.history, file_pi)
