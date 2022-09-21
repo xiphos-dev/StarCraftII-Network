@@ -38,13 +38,14 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
 
-batch_size = 128
+batch_size = 256
 
 units = 64
 output_size = 10 
 
 lr = 5e-3
 
+print(X_train.shape[1])
 
 def modeloRNN(num_unidades,vocab,embedding_dim=256,categorias=2):
     model = keras.Sequential()
@@ -52,7 +53,7 @@ def modeloRNN(num_unidades,vocab,embedding_dim=256,categorias=2):
 
     #model.add(layers.GRU(32))
     
-    model.add(layers.LSTM(num_unidades))
+    model.add(layers.LSTM(100))
     #model.add(layers.SimpleRNN(10))
 
     #model.add(layers.Dense(128, activation='relu'))
@@ -63,10 +64,11 @@ def modeloRNN(num_unidades,vocab,embedding_dim=256,categorias=2):
     model.summary()
     return model
 
-model = modeloRNN(X_train.shape[1],len(vocabulario),256,len(encoder_mid.values()))
+model = modeloRNN(X_train.shape[1],max(vocabulario)+1,256,len(encoder_mid.values()))
 
 
-ruta_modelo = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/Modelo_recurrente/Input_unico_midgame")
+#ruta_modelo = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/Modelo_recurrente/Input_unico_midgame")
+ruta_modelo = "./Modelo_input_unico_midgame"
 checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='auto')
 lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
@@ -77,14 +79,14 @@ model.compile(
 )
 
 historia = model.fit(
-    X_train_rnn, y_train, 
-    validation_data=(X_test_rnn, y_test), 
+    X_train, y_train, 
+    validation_data=(X_test, y_test), 
     batch_size=batch_size, 
-    epochs=30,
+    epochs=10,
     callbacks=[checkpoint_best, lrschedule_1]
 )
 
 
 
-with open('./Modelo_recurrente/historia', 'wb') as file_pi:
+with open('./historia_input_unico', 'wb') as file_pi:
     pickle.dump(historia.history, file_pi)

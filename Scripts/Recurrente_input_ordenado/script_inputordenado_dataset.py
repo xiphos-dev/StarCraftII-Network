@@ -257,8 +257,15 @@ def primeraTech(fila, cota_tiempo=336):
 columnas_coordenadas = [col for col in df.columns if "_x" in col or "_y" in col]
 columnas_tiempo = [col for col in df.columns if "_t" in col]
 
+valores = df["Label"].value_counts()
+for llave, valor in valores.items():
+    if valor < 500:
+        del valores[llave]
 
-df = df[~df["Label"].isin(builds_poco_presentes)]
+builds = df[df["Label"].isin(valores.keys())]
+builds = builds.Label.unique().tolist()
+
+df = df[df["Label"].isin(builds)]
 
 df["Primer_tech"] = df.apply(lambda fila: primeraTech(fila,336), axis=1)
 df.head()
@@ -1133,7 +1140,7 @@ with open("y_test_unico","wb") as arc:
     pickle.dump(y_test,arc)
 
 with open("vocabulario","wb") as arc:
-	pickle.dump(vocabulario,arc)
+    pickle.dump(vocabulario,arc)
 
 with open("encoder_mid","wb") as arc:
     pickle.dump(encoder_mid,arc)
