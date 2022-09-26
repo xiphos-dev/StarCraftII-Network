@@ -353,8 +353,8 @@ def inputRecurrenteMixto(df,y_target,main,natural,tiempo_limite):
     vocabulario_unidades = []
     vocabulario_mejoras = []
     #largo = 30 #336 tiempo
-    largo = 100
-    largo_unidades = 200
+    largo = 60
+    largo_unidades = 130
     largo_mejoras = len(mejoras)
     vacio_mapa=[]
     for index, row in df.iterrows():
@@ -367,7 +367,6 @@ def inputRecurrenteMixto(df,y_target,main,natural,tiempo_limite):
         fila_estructuras=[[0, 999] for _,_ in enumerate(range(largo))]
         fila_unidades=[[0, 999] for _,_ in enumerate(range(largo_unidades))]
         fila_mejoras=[[0, 999] for _,_ in enumerate(range(largo_mejoras))]
-        fila_final=[]
         fila_final_mejoras=[]
         fila_final_unidades=[]
         #fila = sorted(fila, key=lambda x: x[1], reverse=True)
@@ -376,6 +375,7 @@ def inputRecurrenteMixto(df,y_target,main,natural,tiempo_limite):
         pos_unidades=0
         i=0
         while i < len(tiempos):
+            fila_final=[]
             #x = row[columnas[i]]
             #y = row[columnas[i+1]
             frases = tiempos[i].split("_")
@@ -408,16 +408,16 @@ def inputRecurrenteMixto(df,y_target,main,natural,tiempo_limite):
                         #print(str(unidad)+":"+elemento)
                         if int(elemento) > tiempo_limite:
                             break
-                        if int(elemento) != 0:
-                            fila_unidades[pos_unidades] = [unidad,int(elemento)]
-                            pos_unidades+=1
-                            vacio_unidades = False
+
+                        fila_unidades[pos_unidades] = [unidad,int(elemento)]
+                        pos_unidades+=1
+                        vacio_unidades = False
                 else:
-                    if tiempo <= tiempo_limite and tiempo != 0:
+                    if tiempo <= tiempo_limite:
                         fila_unidades[pos_unidades] = [unidad,int(tiempo)]
                         pos_unidades+=1
                         vacio_unidades = False
-            elif int(tiempo) == 0 or int(tiempo) > tiempo_limite:
+            elif int(tiempo) > tiempo_limite:
                 i+=1
                 continue
             else:
@@ -432,9 +432,10 @@ def inputRecurrenteMixto(df,y_target,main,natural,tiempo_limite):
         pos_mejora=0
         for k in range(len(mejoras)):
             mejora = mejoras[k]
+            mejora = mapeo_mejora_numero[mejora]
             tiempo = row[mejora]
-            if tiempo != 0 and tiempo <= tiempo_limite:
-                fila_mejoras[pos_mejora][0] = mapeo_mejora_numero[mejora]
+            if tiempo <= tiempo_limite:
+                fila_mejoras[pos_mejora][0] = int(mejora)
                 fila_mejoras[pos_mejora][1] = tiempo
                 pos_mejora+=1
                 vacio_mejoras=False
@@ -448,53 +449,44 @@ def inputRecurrenteMixto(df,y_target,main,natural,tiempo_limite):
                     
                 #fila_denso.append(fila_estructuras[posicion][0])
                 #fila_denso.append(fila_estructuras[posicion][1])
-                
                 fila_final.append(fila_estructuras[posicion][0])
-                
                 #fila_final.append(fila[posicion][1])
                 vocabulario.append(fila_estructuras[posicion][0])
                 #vocabulario.append(fila[posicion][1])
                 
-            fila_unidades = sorted(fila_unidades, key=lambda x: x[1])
-            
-            for posicion in range(len(fila_unidades)):
-                if fila_unidades[posicion][1] == 999:
-                    fila_unidades[posicion][1] = 0
-                fila_final_unidades.append(fila_unidades[posicion][0])
-                vocabulario_unidades.append(fila_unidades[posicion][0])
-            
             fila_mejoras = sorted(fila_mejoras, key=lambda x: x[1])
             
             for posicion in range(len(fila_mejoras)):
                 if fila_mejoras[posicion][1] == 999:
                     fila_mejoras[posicion][1] = 0
-                fila_final_mejoras.append(fila_mejoras[posicion][0])
-                vocabulario_mejoras.append(fila_mejoras[posicion][0])
+                fila_final.append(fila_mejoras[posicion][0])
+                vocabulario.append(fila_mejoras[posicion][0])    
+            
+            
+            fila_unidades = sorted(fila_unidades, key=lambda x: x[1])
+            
+            for posicion in range(len(fila_unidades)):
+                if fila_unidades[posicion][1] == 999:
+                    fila_unidades[posicion][1] = 0
+                fila_final.append(fila_unidades[posicion][0])
+                vocabulario.append(fila_unidades[posicion][0])
+            
             #print(len(fila_final_mejoras))
             #output.append([x[0] for x in fila])
             output_rnn.append(fila_final)
-            output_rnn_mejoras.append(fila_final_mejoras)
-            output_rnn_unidades.append(fila_final_unidades)
         else:
             vacio_mapa.append(index)
             y_target=y_target.drop(index)
             df = df.drop(index)
     vocabulario = convertirATupla(vocabulario)
     vocabulario = set(vocabulario)
-    
-    vocabulario_unidades = convertirATupla(vocabulario_unidades)
-    vocabulario_unidades = set(vocabulario_unidades)
-    
-    vocabulario_mejoras = convertirATupla(vocabulario_mejoras)
-    vocabulario_mejoras = set(vocabulario_mejoras)
-    
+    '''
     x_batch_rnn = np.reshape(output_rnn,[df.shape[0],largo])
     x_batch_rnn_unidades = np.reshape(output_rnn_unidades,[df.shape[0],largo_unidades])
     x_batch_rnn_mejoras = np.reshape(output_rnn_mejoras,[df.shape[0],largo_mejoras])
+    '''
     
-    return df,x_batch_rnn, x_batch_rnn_unidades, x_batch_rnn_mejoras, y_target, vacio_mapa, vocabulario, vocabulario_unidades, vocabulario_mejoras
-
-
+    return df,np.asarray(output_rnn), y_target, vacio_mapa, vocabulario
 # In[31]:
 
 
@@ -1043,44 +1035,23 @@ def transformarOneHot(y):
 
 
 
-_,x_batch_rnn, x_batch_rnn_unidades, x_batch_rnn_mejoras, y_target, vacio_mapa, vocabulario, vocabulario_unidades, vocabulario_mejoras = inputRecurrenteMixto(X,y2,False,False,700)
+_,x_batch_rnn, y_target, vacio_mapa, vocabulario = inputRecurrenteMixto(X,y2,False,False,700)
 
 encoder_mid, dummy_y_mid = transformarOneHot(y_target)
 categorias = dummy_y_mid.shape[1]
 print(encoder_mid.values())
 print(categorias)
 
-X_train_estructuras,X_test_estructuras,X_train_unidades, X_test_unidades, X_train_mejoras, X_test_mejoras,y_train, y_test=  train_test_split(x_batch_rnn,x_batch_rnn_unidades, x_batch_rnn_mejoras,dummy_y_mid,test_size=0.20, random_state=59)
-
-ruta = "X_train_estructuras"
+X_train,X_test,y_train, y_test=  train_test_split(x_batch_rnn,dummy_y_mid,test_size=0.20, random_state=59)
 
 with open(ruta,"wb") as arc:
-    pickle.dump(X_train_estructuras,arc)
+    pickle.dump(X_train,arc)
 
-ruta = "X_test_estructuras"
-
-with open(ruta,"wb") as arc:
-    pickle.dump(X_test_estructuras,arc)
-
-ruta = "X_train_unidades"
+ruta = "X_test"
 
 with open(ruta,"wb") as arc:
-    pickle.dump(X_train_unidades,arc)
+    pickle.dump(X_test,arc)
 
-ruta = "X_test_unidades"
-
-with open(ruta,"wb") as arc:
-    pickle.dump(X_test_unidades,arc)
-
-ruta = "X_train_mejoras"
-
-with open(ruta,"wb") as arc:
-    pickle.dump(X_train_mejoras,arc)
-
-ruta = "X_test_mejoras"
-
-with open(ruta,"wb") as arc:
-    pickle.dump(X_test_mejoras,arc)
 
 ruta = "y_train"
 with open(ruta,"wb") as arc:
@@ -1090,16 +1061,7 @@ ruta = "y_test"
 with open(ruta,"wb") as arc:
     pickle.dump(y_test,arc)
 
-
 ruta = "vocabulario"
 
 with open(ruta,"wb") as arc:
     pickle.dump(vocabulario,arc)
-
-ruta = "vocabulario_unidades"
-with open(ruta,"wb") as arc:
-    pickle.dump(vocabulario_unidades,arc)
-
-ruta = "vocabulario_mejoras"
-with open(ruta,"wb") as arc:
-    pickle.dump(vocabulario_mejoras,arc)
