@@ -257,16 +257,22 @@ columnas_coordenadas = [col for col in df.columns if "_x" in col or "_y" in col]
 columnas_tiempo = [col for col in df.columns if "_t" in col]
 
 
-df = df[~df["Label"].isin(builds_poco_presentes)]
+builds = df[df["Label"].isin(valores.keys())]
+builds = builds.Label.unique().tolist()
 
-df["Primer_tech"] = df.apply(lambda fila: primeraTech(fila,336), axis=1)
-df.head()
+df = df[df["Label"].isin(builds)]
+
+for llave in builds:
+    print(llave)
+
+#df["Primer_tech"] = df.apply(lambda fila: primeraTech(fila,336), axis=1)
+#df.head()
 
 X = df.drop(["Label"], axis=1).drop("Replay", axis=1).drop(columnas_coordenadas, axis=1).drop(estructuras_tiempo, axis=1)
 X["Probe"] = df.apply(lambda fila: 12 if fila["Probe"] < 12 else fila["Probe"], axis=1)
 X.head()
 
-y = df["Primer_tech"]
+#y = df["Primer_tech"]
 y2 = df["Label"]
 #y = df["Label"]
 
