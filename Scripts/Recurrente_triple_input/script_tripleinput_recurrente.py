@@ -256,6 +256,10 @@ def primeraTech(fila, cota_tiempo=336):
 columnas_coordenadas = [col for col in df.columns if "_x" in col or "_y" in col]
 columnas_tiempo = [col for col in df.columns if "_t" in col]
 
+valores = df["Label"].value_counts()
+for llave, valor in valores.items():
+    if valor < 500:
+        del valores[llave]
 
 builds = df[df["Label"].isin(valores.keys())]
 builds = builds.Label.unique().tolist()
