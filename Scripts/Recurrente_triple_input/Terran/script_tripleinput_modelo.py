@@ -6,26 +6,11 @@ import os
 import numpy as np
 
 
+with open("X_train","rb") as arc:
+    X_train = pickle.load(arc)
 
-
-with open("X_train_estructuras","rb") as arc:
-    X_train_estructuras = pickle.load(arc)
-
-with open("X_test_estructuras","rb") as arc:
-    X_test_estructuras = pickle.load(arc)
-
-with open("X_train_unidades","rb") as arc:
-    X_train_unidades = pickle.load(arc)
-
-with open("X_test_unidades","rb") as arc:
-    X_test_unidades = pickle.load(arc)
-
-with open("X_train_mejoras","rb") as arc:
-    X_train_mejoras = pickle.load(arc)
-
-with open("X_test_mejoras","rb") as arc:
-    X_test_mejoras = pickle.load(arc)
-
+with open("X_test","rb") as arc:
+    X_test = pickle.load(arc)
 
 with open("y_train","rb") as arc:
     y_train = pickle.load(arc)
@@ -37,17 +22,10 @@ with open("y_test","rb") as arc:
 with open("vocabulario","rb") as arc:
     vocabulario_mid = pickle.load(arc)
 
-with open("vocabulario_unidades","rb") as arc:
-    vocabulario_unidades_mid = pickle.load(arc)
-
-with open("vocabulario_mejoras","rb") as arc:
-    vocabulario_mejoras_mid = pickle.load(arc)
-
-input_shape_rnn = X_train_estructuras.shape[1]
-input_shape_mejoras = X_train_mejoras.shape[1]
-input_shape_rnn_unidades = X_train_unidades.shape[1]
-
+input_shape_rnn = X_train.shape[1]
 categorias = y_train.shape[1]
+
+
 
 
 import tensorflow as tf
@@ -102,10 +80,30 @@ def modeloRNNPuro_2_inputs(input_rnn,input_mejoras,vocab,vocab_mejoras,embedding
     
     return modelo
 
-modelo_rnn = modeloRNNPuro_2_inputs(input_shape_rnn,input_shape_mejoras,max(vocabulario_mid)+1,max(vocabulario_mejoras_mid)+1,128,128,categorias)
+def modeloRNN(num_unidades,vocab,timesteps,categorias=2):
+    model = keras.Sequential()
+    #model.add(layers.Embedding(vocab, 100, mask_zero=True, input_length=input_shape_rnn))
+
+    #model.add(layers.GRU(32))
+    model.add(layers.Embedding(vocab, 100, mask_zero=True, input_length=input_shape_rnn))
+    model.add(layers.Masking(mask_value=0, input_shape=(timesteps,1)))
+    model.add(layers.LSTM(50))
+    #model.add(layers.SimpleRNN(10))
+
+    #model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dropout(.2))
+
+    model.add(layers.Dense(categorias, activation="softmax"))
+
+    model.summary()
+    return model
+
+model = modeloRNN(X_train.shape[1],max(vocabulario_mid)+1,X_train.shape[1],len(encoder_mid.values()))
+
+
 
 #ruta_modelo = os.path.join(os.environ["SLURM_SUBMIT_DIR"],"/Modelo_recurrente/Input_triple_midgame")
-ruta_modelo = "../../../Modelo_recurrente/Input_doble_midgame_t"
+ruta_modelo = "./Modelo_input_b_terran"
 checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='max')
 lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
@@ -116,15 +114,15 @@ modelo_rnn.compile(
 )
 
 historia = modelo_rnn.fit(
-    x=[X_train_estructuras,X_train_mejoras], y=y_train, 
-    validation_data=([X_test_estructuras,X_test_mejoras], y_test), 
-    batch_size=batch_size, 
-    epochs=30,
+    x=X_train, y=y_train, 
+    validation_data=(X_test y_test), 
+    batch_size=64, 
+    epochs=50,
     callbacks=[checkpoint_best, lrschedule_1]
 )
 
 
 
 
-with open ('../../../Modelo_recurrente/historia_input_doble_t', 'wb') as file_pi:
+with open ('./Historial_referencia/historia_input_b_terran', 'wb') as file_pi:
     pickle.dump(historia, file_pi)

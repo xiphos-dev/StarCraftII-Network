@@ -155,7 +155,6 @@ for llave, valor in valores.items():
 
 
 builds = df[df["Label"].isin(valores.keys())]
-
 builds_objetivo = builds.Label.unique().tolist()
 
 for build in builds_objetivo: 
@@ -196,18 +195,13 @@ columnas_coordenadas = [col for col in df.columns if "_x" in col or "_y" in col]
 columnas_tiempo = [col for col in df.columns if "_t" in col]
 
 
-df = df[~df["Label"].isin(builds_poco_presentes)]
-
-df["Primer_tech"] = df.apply(lambda fila: primeraTech(fila,336), axis=1)
-df.head()
+df = df[df["Label"].isin(builds_objetivo)]
 
 X = df.drop(["Label"], axis=1).drop("Replay", axis=1).drop(columnas_coordenadas, axis=1).drop(estructuras_tiempo, axis=1)
 X["Drone"] = X.apply(lambda fila: 12 if fila["Drone"] < 12 else fila["Drone"], axis=1)
 X.head()
 
-#y = df["Primer_tech"]
-#y2 = df["Label"]
-y = df["Label"]
+y2 = df["Label"]
 
 
 # In[28]:
