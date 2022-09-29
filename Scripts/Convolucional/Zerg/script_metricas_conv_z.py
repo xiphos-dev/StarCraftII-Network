@@ -28,21 +28,21 @@ def producirDatosMatriz(predicciones, y_test):
     return precision, recall, f1, accuracy, cm
 
 from tensorflow import keras
-ruta_modelo = "./Modelo88f_sinpadding_z"
+ruta_modelo = "./Modelo8f8_sinpadding_z"
 modelo =  keras.models.load_model(ruta_modelo)
 
 numero_secciones_data = 2
 
 for numero in range(1,numero_secciones_data+1):
-
-    with open("y_test_"+numero,"rb") as arc:
+    numero_str = str(numero)
+    with open("y_test_"+numero_str,"rb") as arc:
         y_test = pickle.load(arc)
 
-    ifile = bz2.BZ2File("X_test_"+numero,"rb")
+    ifile = bz2.BZ2File("X_test_"+numero_str,"rb")
     X_test = pickle.load(ifile)
     ifile.close()
 
-    predicciones = modelo_denso.predict(X_test)
+    predicciones = modelo.predict(X_test)
 
     precision, recall, f1, acc, cm = producirDatosMatriz(predicciones, y_test)
 
@@ -57,5 +57,5 @@ for numero in range(1,numero_secciones_data+1):
         "y_test": y_test
     }
 
-    with open('./Validaciones/metricas_'+numero, 'wb') as file_pi:
+    with open('./Validaciones/metricas_'+numero_str, 'wb') as file_pi:
         pickle.dump(estado, file_pi)
