@@ -27,7 +27,7 @@ def producirDatosMatriz(predicciones, y_test):
     
     return precision, recall, f1, accuracy, cm
 
-from tensorflow import kerass
+from tensorflow import keras
 ruta_modelo = "./Modelo_convolucional_con_drop8F8"
 modelo =  keras.models.load_model(ruta_modelo)
 

@@ -27,14 +27,14 @@ def producirDatosMatriz(predicciones, y_test):
     
     return precision, recall, f1, accuracy, cm
 
-from tensorflow import kerass
+from tensorflow import keras
 ruta_modelo = "./Modelo_Protoss_primo"
 modelo =  keras.models.load_model(ruta_modelo)
 
 with open("y_test","rb") as arc:
     y_test = pickle.load(arc)
 
-ifile = bz2.BZ2File("X_test"+numero_str,"rb")
+ifile = bz2.BZ2File("X_test","rb")
 X_test = pickle.load(ifile)
 ifile.close()
 
