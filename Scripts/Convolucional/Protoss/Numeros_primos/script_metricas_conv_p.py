@@ -31,31 +31,27 @@ from tensorflow import kerass
 ruta_modelo = "./Modelo_Protoss_primo"
 modelo =  keras.models.load_model(ruta_modelo)
 
-numero_secciones_data = 1
+with open("y_test","rb") as arc:
+    y_test = pickle.load(arc)
 
-for numero in range(1,numero_secciones_data+1):
-    numero_str = str(numero)
-    with open("y_test_"+numero_str,"rb") as arc:
-        y_test = pickle.load(arc)
+ifile = bz2.BZ2File("X_test"+numero_str,"rb")
+X_test = pickle.load(ifile)
+ifile.close()
 
-    ifile = bz2.BZ2File("X_test_"+numero_str,"rb")
-    X_test = pickle.load(ifile)
-    ifile.close()
+predicciones = modelo.predict(X_test)
 
-    predicciones = modelo.predict(X_test)
+precision, recall, f1, acc, cm = producirDatosMatriz(predicciones, y_test)
 
-    precision, recall, f1, acc, cm = producirDatosMatriz(predicciones, y_test)
+estado = {
+    "precision": precision,
+    "recall": recall,
+    "accuracy": acc,
+    "fscore": f1,
+    "cm": cm,
+    "clases": encoder.classes_,
+    "y_pred": predicciones,
+    "y_test": y_test
+}
 
-    estado = {
-        "precision": precision,
-        "recall": recall,
-        "accuracy": acc,
-        "fscore": f1,
-        "cm": cm,
-        "clases": encoder.classes_,
-        "y_pred": predicciones,
-        "y_test": y_test
-    }
-
-    with open('./Validaciones/metricas_'+numero_str, 'wb') as file_pi:
-        pickle.dump(estado, file_pi)
+with open('./Validaciones/metricas', 'wb') as file_pi:
+    pickle.dump(estado, file_pi)
