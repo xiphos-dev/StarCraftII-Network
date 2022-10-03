@@ -173,11 +173,13 @@ def primeraTech(fila, cota_tiempo=336):
 columnas_coordenadas = [col for col in df.columns if "_x" in col or "_y" in col]
 columnas_tiempo = [col for col in df.columns if "_t" in col]
 
+columnas_eliminar = [col for col in df.columns if "Flying" in col or "Lowered" in col]
+columnas_eliminar = [col for col in columnas_eliminar if col not in columnas_coordenadas and col not in estructuras_tiempo]
 
 df = df[df["Label"].isin(builds_objetivo)]
 
 
-X = df.drop(["Label"], axis=1).drop("Replay", axis=1).drop(columnas_coordenadas, axis=1).drop(estructuras_tiempo, axis=1)
+X = df.drop(["Label"], axis=1).drop("Replay", axis=1).drop(columnas_coordenadas, axis=1).drop(estructuras_tiempo, axis=1).drop(columnas_eliminar, axis=1)
 X["SCV"] = df.apply(lambda fila: 12 if fila["SCV"] < 12 else fila["SCV"], axis=1)
 X.head()
 
