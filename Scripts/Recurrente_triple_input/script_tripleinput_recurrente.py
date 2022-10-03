@@ -1139,3 +1139,7 @@ ruta = "vocabulario"
 
 with open(ruta,"wb") as arc:
     pickle.dump(vocabulario,arc)
+
+ruta = "encoder"
+with open(ruta, "wb") as arc:
+    pickle.dump(encoder_mid,arc)

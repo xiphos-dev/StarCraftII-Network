@@ -166,6 +166,9 @@ builds = df[df["Label"].isin(valores.keys())]
 
 builds_objetivo = builds.Label.unique().tolist()
 
+for build in builds_objetivo:
+    print(build)
+
 def primeraTech(fila, cota_tiempo=336):
     #1:24 minutos in-replay time toma para que transcurra 1 minuto in game
     #1 minuto in game = 1:24 = 84 segundos reales
