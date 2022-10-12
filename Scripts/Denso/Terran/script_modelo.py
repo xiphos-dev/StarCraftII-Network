@@ -14,6 +14,11 @@ from tensorflow.keras import layers
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.callbacks import ModelCheckpoint
 
+import pickle
+import os
+import bz2
+
+
 batch_size = 128
 
 units = 64

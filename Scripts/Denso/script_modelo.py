@@ -12,12 +12,39 @@ from tensorflow.keras import layers
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.callbacks import ModelCheckpoint
 
+import numpy as np
+import pickle
+import os
+import bz2
+
+
 batch_size = 256
 
 units = 64
 output_size = 10 
 
 lr = 5e-3
+
+
+
+with open("y_train","rb") as arc:
+    y_train = pickle.load(arc)
+
+with open("y_test","rb") as arc:
+    y_test = pickle.load(arc)
+
+with open("encoder","rb") as arc:
+    encoder = pickle.load(arc)
+
+ifile = bz2.BZ2File("X_train","rb")
+X_train = pickle.load(ifile)
+ifile.close()
+
+ifile = bz2.BZ2File("X_test","rb")
+X_test = pickle.load(ifile)
+ifile.close()
+
+categorias = y_train.shape[1]
 
 
 def modeloDenso(input_denso_shape,categorias=2,neuronas=256,drop=False,drop_prob=0):
