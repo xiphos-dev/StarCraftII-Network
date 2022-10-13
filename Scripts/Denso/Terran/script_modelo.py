@@ -26,20 +26,20 @@ output_size = 10
 
 lr = 5e-3
 
-with open("y_train","rb") as arc:
+with open("y_train_b","rb") as arc:
     y_train = pickle.load(arc)
 
-with open("y_test","rb") as arc:
+with open("y_test_b","rb") as arc:
     y_test = pickle.load(arc)
 
 with open("encoder","rb") as arc:
     encoder = pickle.load(arc)
 
-ifile = bz2.BZ2File("X_train","rb")
+ifile = bz2.BZ2File("X_train_b","rb")
 X_train = pickle.load(ifile)
 ifile.close()
 
-ifile = bz2.BZ2File("X_test","rb")
+ifile = bz2.BZ2File("X_test_b","rb")
 X_test = pickle.load(ifile)
 ifile.close()
 
@@ -114,7 +114,7 @@ numero_neuronas = [128,256,512]
 for numero in numero_neuronas:
 
     numero_str = str(numero)
-    ruta_modelo = "./Modelo"+numero_str
+    ruta_modelo = "./Modelo_b"+numero_str
     checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='auto')
     lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
@@ -137,5 +137,5 @@ for numero in numero_neuronas:
                 validation_data=(X_test, y_test),
                 callbacks=[checkpoint_best, lrschedule_1])
 
-    with open('./Historial_referencia/historial'+numero_str, 'wb') as file_pi:
+    with open('./Historial_referencia/historial_b'+numero_str, 'wb') as file_pi:
         pickle.dump(historia.history, file_pi)

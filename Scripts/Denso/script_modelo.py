@@ -27,20 +27,20 @@ lr = 5e-3
 
 
 
-with open("y_train","rb") as arc:
+with open("y_train_b","rb") as arc:
     y_train = pickle.load(arc)
 
-with open("y_test","rb") as arc:
+with open("y_test_b","rb") as arc:
     y_test = pickle.load(arc)
 
 with open("encoder","rb") as arc:
     encoder = pickle.load(arc)
 
-ifile = bz2.BZ2File("X_train","rb")
+ifile = bz2.BZ2File("X_train_b","rb")
 X_train = pickle.load(ifile)
 ifile.close()
 
-ifile = bz2.BZ2File("X_test","rb")
+ifile = bz2.BZ2File("X_test_b","rb")
 X_test = pickle.load(ifile)
 ifile.close()
 
@@ -117,7 +117,7 @@ def modeloDenso3capas(input_denso_shape,categorias=2,neuronas=256,neuronas_2=128
 
 
 modelo_denso = modeloDenso(input_shape,categorias,128)
-ruta_modelo = "./Modelo128"
+ruta_modelo = "./Modelo_b128"
 checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='auto')
 lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
@@ -147,7 +147,7 @@ with open('./Historial_referencia/historial128', 'wb') as file_pi:
 
 
 modelo_denso = modeloDenso(input_shape,categorias,256)
-ruta_modelo = "./Modelo256"
+ruta_modelo = "./Modelo_b256"
 checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='auto')
 lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
@@ -168,7 +168,7 @@ historia= modelo.fit(
             callbacks=[checkpoint_best, lrschedule_1])
 
 
-with open('./Historial_referencia/historial256', 'wb') as file_pi:
+with open('./Historial_referencia/historialb256', 'wb') as file_pi:
     pickle.dump(historia.history, file_pi)
 # ## 512 - Midgame prediction
 
@@ -176,7 +176,7 @@ with open('./Historial_referencia/historial256', 'wb') as file_pi:
 
 
 modelo_denso = modeloDenso(input_shape,categorias,512)
-ruta_modelo = "./Modelo512"
+ruta_modelo = "./Modelo_b512"
 checkpoint_best = ModelCheckpoint(filepath=ruta_modelo, monitor='val_accuracy',verbose=1, save_best_only=True, mode='auto')
 lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
@@ -197,10 +197,10 @@ historia= modelo.fit(
             callbacks=[checkpoint_best, lrschedule_1])
 
 
-with open('./Historial_referencia/historial512', 'wb') as file_pi:
+with open('./Historial_referencia/historialb512', 'wb') as file_pi:
     pickle.dump(historia.history, file_pi)
 
-
+'''
 # # 128 + Dropout - Midgame prediction
 
 # In[50]:
@@ -288,6 +288,8 @@ historia= modelo.fit(
 
 with open('./Historial_referencia/historial512_drop', 'wb') as file_pi:
     pickle.dump(historia.history, file_pi)
+
+'''
 
 '''
 
