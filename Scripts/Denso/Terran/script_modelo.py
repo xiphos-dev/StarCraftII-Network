@@ -119,7 +119,7 @@ for numero in numero_neuronas:
     lrschedule_1 = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.70, mode='auto')
 
 
-    modelo_denso = modeloDenso(input_shape,categorias,numero)
+    modelo_denso = modeloDenso(X_train.shape[1],categorias,numero)
 
     modelo_denso.compile(
         loss=keras.losses.CategoricalCrossentropy(),
