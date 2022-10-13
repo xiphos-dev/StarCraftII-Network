@@ -31,30 +31,35 @@ def producirDatosMatriz(predicciones, y_test):
     return precision, recall, f1, accuracy, cm
 
 from tensorflow import keras
-ruta_modelo = "./Modelo_convolucional_con_drop8F8"
-modelo =  keras.models.load_model(ruta_modelo)
 
-with open("y_test_exp","rb") as arc:
-    y_test = pickle.load(arc)
+numero_neuronas = [128,256,512]
 
-ifile = bz2.BZ2File("X_test_exp","rb")
-X_test = pickle.load(ifile)
-ifile.close()
+for numero in numero_neuronas:
+    num = str(numero)
+    ruta_modelo = "./Modelo_"+num
+    modelo =  keras.models.load_model(ruta_modelo)
 
-predicciones = modelo.predict(X_test)
+    with open("y_test","rb") as arc:
+        y_test = pickle.load(arc)
 
-precision, recall, f1, acc, cm = producirDatosMatriz(predicciones, y_test)
+    ifile = bz2.BZ2File("X_test","rb")
+    X_test = pickle.load(ifile)
+    ifile.close()
 
-estado = {
-    "precision": precision,
-    "recall": recall,
-    "accuracy": acc,
-    "fscore": f1,
-    "cm": cm,
-    "clases": encoder.classes_,
-    "y_pred": predicciones,
-    "y_test": y_test
-}
+    predicciones = modelo.predict(X_test)
 
-with open('./Validaciones/metricas', 'wb') as file_pi:
-    pickle.dump(estado, file_pi)
+    precision, recall, f1, acc, cm = producirDatosMatriz(predicciones, y_test)
+
+    estado = {
+        "precision": precision,
+        "recall": recall,
+        "accuracy": acc,
+        "fscore": f1,
+        "cm": cm,
+        "clases": encoder.classes_,
+        "y_pred": predicciones,
+        "y_test": y_test
+    }
+
+    with open('./Validaciones/metricas_'+num, 'wb') as file_pi:
+        pickle.dump(estado, file_pi)
