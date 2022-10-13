@@ -26,6 +26,7 @@ output_size = 10
 
 lr = 5e-3
 
+'''
 with open("y_train_b","rb") as arc:
     y_train = pickle.load(arc)
 
@@ -42,6 +43,26 @@ ifile.close()
 ifile = bz2.BZ2File("X_test_b","rb")
 X_test = pickle.load(ifile)
 ifile.close()
+'''
+
+with open("y_train","rb") as arc:
+    y_train = pickle.load(arc)
+
+with open("y_test","rb") as arc:
+    y_test = pickle.load(arc)
+
+with open("encoder","rb") as arc:
+    encoder = pickle.load(arc)
+
+ifile = bz2.BZ2File("X_train","rb")
+X_train = pickle.load(ifile)
+ifile.close()
+
+ifile = bz2.BZ2File("X_test","rb")
+X_test = pickle.load(ifile)
+ifile.close()
+
+categorias = y_train.shape[1]
 
 categorias = y_train.shape[1]
 
