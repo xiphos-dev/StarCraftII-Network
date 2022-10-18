@@ -320,7 +320,7 @@ def inputRecurrenteMixto(df,y_target,main,natural,tiempo_limite):
     vocabulario_unidades = []
     vocabulario_mejoras = []
     #largo = 30 #336 tiempo
-    largo = 60
+    largo = 100
     largo_unidades = 130
     largo_mejoras = len(mejoras)
     vacio_mapa=[]
