@@ -184,17 +184,16 @@ columnas_coordenadas = [col for col in df.columns if "_x" in col or "_y" in col]
 columnas_tiempo = [col for col in df.columns if "_t" in col]
 
 columnas_excepcion = [col for col in df.columns if "Hive" in col or "Lair" in col or "GreaterSpire" in col or "Nydus" in col]
+columnas_excepcion = [col for col in columnas_excepcion if col not in columnas_coordenadas]
 columnas_excepcion = [col for col in columnas_excepcion if col not in mejoras]
 
 
 df = df[df["Label"].isin(builds_objetivo)]
 
 #df["Primer_tech"] = df.apply(lambda fila: primeraTech(fila,336), axis=1)
-df.head()
 
 X = df.drop(["Label"], axis=1).drop("Replay", axis=1).drop(columnas_coordenadas, axis=1).drop(estructuras_tiempo, axis=1).drop(columnas_excepcion, axis=1)
 X["Drone"] = df.apply(lambda fila: 12 if fila["Drone"] < 12 else fila["Drone"], axis=1)
-X.head()
 
 #y = df["Primer_tech"]
 y = df["Label"]
@@ -1019,7 +1018,7 @@ def transformarOneHot(y):
     encoded_Y = encoder.transform(y)
     # convert integers to dummy variables (i.e. one hot encoded)
     dummy_y = np_utils.to_categorical(encoded_Y)
-    return encoder_mapeo, dummy_y
+    return encoder,encoder_mapeo, dummy_y
 
 
 
@@ -1028,7 +1027,7 @@ def transformarOneHot(y):
 _,x_batch_rnn, y_mid, vacio_mapa, vocabulario = inputRecurrenteUnicoOrdenado(X,y,False,False,700)
 
 
-encoder_mid, dummy_y_mid = transformarOneHot(y_mid)
+encoder,encoder_mid, dummy_y_mid = transformarOneHot(y_mid)
 categorias = dummy_y_mid.shape[1]
 print(encoder_mid.values())
 print(categorias)
@@ -1051,4 +1050,4 @@ with open("vocabulario","wb") as arc:
     pickle.dump(vocabulario,arc)
 
 with open("encoder_mid","wb") as arc:
-    pickle.dump(encoder_mid,arc)
+    pickle.dump(encoder,arc)
