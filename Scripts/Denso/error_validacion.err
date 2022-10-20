@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "script_metricas_p.py", line 40, in <module>
+    modelo =  keras.models.load_model(ruta_modelo)
+  File "/opt/software/anaconda3/2020.11/lib/python3.8/site-packages/tensorflow/python/keras/saving/save.py", line 189, in load_model
+    loader_impl.parse_saved_model(filepath)
+  File "/opt/software/anaconda3/2020.11/lib/python3.8/site-packages/tensorflow/python/saved_model/loader_impl.py", line 110, in parse_saved_model
+    raise IOError("SavedModel file does not exist at: %s/{%s|%s}" %
+OSError: SavedModel file does not exist at: ./Modelo_128x128/{saved_model.pbtxt|saved_model.pb}

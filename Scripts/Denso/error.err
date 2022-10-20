@@ -1,0 +1,29 @@
+
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+
+2022-10-13 16:09:18.073914: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX
+2022-10-13 16:09:18.081998: I tensorflow/core/platform/profile_utils/cpu_utils.cc:102] CPU Frequency: 3499775000 Hz
+2022-10-13 16:09:18.082119: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x55c2dd34f470 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2022-10-13 16:09:18.082143: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2022-10-13 16:09:18.082264: I tensorflow/core/common_runtime/process_util.cc:147] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+2022-10-13 16:09:22.680091: W tensorflow/python/util/util.cc:329] Sets are not currently considered sequences, but this may change in the future, so consider avoiding using them.
+WARNING:tensorflow:From /opt/software/anaconda3/2020.11/lib/python3.8/site-packages/tensorflow/python/ops/resource_variable_ops.py:1813: calling BaseResourceVariable.__init__ (from tensorflow.python.ops.resource_variable_ops) with constraint is deprecated and will be removed in a future version.
+Instructions for updating:
+If using Keras pass *_constraint arguments to layers.
+DeprecationWarning: 'source deactivate' is deprecated. Use 'conda deactivate'.

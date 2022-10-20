@@ -1,0 +1,28 @@
+Package "anaconda3" is ready
+['1 Hatch ', '1 Hatch Roach Ravager ']
+['2 Hatch Spire Roach ', '2 Hatch ', '2 Hatch Hydralisk Roach Ravager ', '2 Hatch Spire ', '2 Hatch Roach ', '2 Hatch Roach Ravager ', '2 Hatch Spire Roach Ravager ', '2 Hatch Hydralisk Roach ', '2 Hatch Spire Ling Baneling', '2 Hatch Hydralisk Ling Baneling', '2 Hatch Lurker ', '2 Hatch Hydralisk ', '2 Hatch Ling Baneling']
+['3 Hatch Roach ', '3 Hatch Roach Ravager ', '3 Hatch Hydralisk ', '3 Hatch Hydralisk Roach Ravager ', '3 Hatch Spire ', '3 Hatch Lurker Roach ', '3 Hatch ', '3 Hatch Spire Ling Baneling', '3 Hatch Ling Baneling', '3 Hatch Spire Roach ', '3 Hatch Lurker Ling Baneling', '3 Hatch Hydralisk Roach ', '3 Hatch Hydralisk Ling Baneling', '3 Hatch Spire Roach Ravager ', '3 Hatch Lurker ']
+['4 Hatch ', '4 Hatch Hydralisk Roach Ravager ', '4 Hatch Hydralisk Ling Baneling', '4 Hatch Spire ', '4 Hatch Spire Ling Baneling', '4 Hatch Roach Ravager ', '4 Hatch Roach ', '4 Hatch Hydralisk ', '4 Hatch Lurker Ling Baneling', '4 Hatch Infestor Ling Baneling', '4 Hatch Spire Roach ', '4 Hatch Spire Roach Ravager ', '4 Hatch Ling Baneling', '4 Hatch Hydralisk Roach ', '4 Hatch Lurker ']
+['5 Hatch Spire Ling Baneling', '5 Hatch Hydralisk Ling Baneling', '5 Hatch Hydralisk ', '5 Hatch Hydralisk Roach ', '5 Hatch Spire ', '5 Hatch ', '5 Hatch Ling Baneling', '5 Hatch Roach ', '5 Hatch Roach Ravager ', '5 Hatch Hydralisk Roach Ravager ', '5 Hatch Spire Roach Ravager ', '5 Hatch Spire Roach ']
+['6 Hatch Spire Ling Baneling', '6 Hatch Ling Baneling', '6 Hatch Hydralisk Ling Baneling']
+[]
+(250951, 6)
+[0. 0. 0. 1. 0. 0.]
+(200760, 341)
+(200760, 6)
+(50191, 341)
+(50191, 6)
+341
+[[-0.08089737 -1.1014488  -0.94587693 ...  0.          0.
+   0.        ]
+ [-0.95865163 -1.10725922 -1.14441112 ...  0.          0.
+   0.        ]
+ [-0.68236593 -1.15566985 -1.24271425 ...  0.          0.
+   0.        ]
+ ...
+ [-1.32578843 -1.17933915 -1.12864517 ...  0.          0.
+   0.        ]
+ [-1.29373304  1.14152915  0.15220389 ...  0.          0.
+   0.        ]
+ [-1.05328862 -0.98200866 -0.90054586 ...  0.          0.
+   0.        ]]

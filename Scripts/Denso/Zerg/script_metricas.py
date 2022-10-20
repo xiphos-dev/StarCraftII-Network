@@ -35,7 +35,7 @@ numero_neuronas = [128,256,512]
 
 for numero in numero_neuronas:
     num = str(numero)
-    ruta_modelo = "./Modelo_"+num
+    ruta_modelo = "./Modelo_"+num+"x"+num
     modelo =  keras.models.load_model(ruta_modelo)
 
     with open("y_test","rb") as arc:
@@ -60,5 +60,5 @@ for numero in numero_neuronas:
         "y_test": y_test
     }
 
-    with open('./Validaciones/metricas_'+num, 'wb') as file_pi:
+    with open('./Validaciones/metricas_'+num+"x"+num, 'wb') as file_pi:
         pickle.dump(estado, file_pi)

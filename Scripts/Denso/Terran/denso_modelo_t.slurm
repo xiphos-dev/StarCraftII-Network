@@ -2,7 +2,7 @@
 #SBATCH --mail-user=nicolas.pinob@sansano.usm.cl
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH -e error.err
-#SBATCH --time=40:00
+#SBATCH --time=65:00
 #SBATCH --mem=15G
 #SBATCH -p gpuk
 #SBATCH --gres=gpu:1

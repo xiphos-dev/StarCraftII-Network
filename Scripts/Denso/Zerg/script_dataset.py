@@ -611,7 +611,9 @@ dummy_y = np_utils.to_categorical(encoded_Y)
 # In[23]:
 
 
-input_random = inputDensoRandomSelection(X,336,0.8,True,True,True)
+#input_random = inputDensoRandomSelection(X,700,1,True,True,True)
+input_random = inputDensoRandomSelectionConDatoClave(X,700,1,True,True,True)
+
 X_train, X_test, y_train, y_test = train_test_split(input_random, dummy_y, test_size=0.20, random_state=98)
 
 
@@ -644,21 +646,21 @@ import pickle
 import bz2
 from shutil import make_archive
 
-ofile = bz2.BZ2File("X_train","wb")
+ofile = bz2.BZ2File("X_train_b","wb")
 pickle.dump(X_train,ofile)
 ofile.close()
 
-ofile = bz2.BZ2File("X_test","wb")
+ofile = bz2.BZ2File("X_test_b","wb")
 pickle.dump(X_test,ofile)
 ofile.close()
 
-with open("y_train","wb") as arc:
+with open("y_train_b","wb") as arc:
     pickle.dump(y_train,arc)
 
-with open("y_test","wb") as arc:
+with open("y_test_b","wb") as arc:
     pickle.dump(y_test,arc)
 
-with open("encoder","wb") as arc:
-    pickle.dump(encoder,arc)
+#with open("encoder","wb") as arc:
+ #   pickle.dump(encoder,arc)
 
 

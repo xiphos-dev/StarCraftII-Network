@@ -600,7 +600,8 @@ X.head()
 # In[20]:
 
 
-input_random = inputDensoRandomSelection(X,252,1,True,True,True)
+#input_random = inputDensoRandomSelection(X,700,1,True,True,True)
+input_random = inputDensoRandomSelectionConDatoClave(X,700,1,True,True,True)
 
 
 # In[21]:
@@ -645,19 +646,19 @@ import pickle
 import bz2
 from shutil import make_archive
 
-ofile = bz2.BZ2File("X_train","wb")
+ofile = bz2.BZ2File("X_train_b","wb")
 pickle.dump(X_train,ofile)
 ofile.close()
 
-ofile = bz2.BZ2File("X_test","wb")
+ofile = bz2.BZ2File("X_test_b","wb")
 pickle.dump(X_test,ofile)
 ofile.close()
 
-with open("y_train","wb") as arc:
+with open("y_train_b","wb") as arc:
     pickle.dump(y_train,arc)
 
-with open("y_test","wb") as arc:
+with open("y_test_b","wb") as arc:
     pickle.dump(y_test,arc)
 
-with open("encoder","wb") as arc:
-    pickle.dump(encoder,arc)
+#with open("encoder","wb") as arc:
+#    pickle.dump(encoder,arc)

@@ -1132,8 +1132,8 @@ print(dummy_y[0])
 # In[24]:
 
 
-input_random = inputDensoRandomDividido(X,700,0.7,True,True,True)
-#input_random = inputDensoRandomSelectionConDatoClave(X,700,1,True,True,True)
+#input_random = inputDensoRandomDividido(X,700,1,True,True,True)
+input_random = inputDensoRandomSelectionConDatoClave(X,700,1,True,True,True)
 #input_random = inputDensoRandomSelectionConMascara(X,700,0.7,True,True,True)
 
 
@@ -1148,22 +1148,22 @@ import pickle
 import bz2
 from shutil import make_archive
 
-ofile = bz2.BZ2File("X_train","wb")
+ofile = bz2.BZ2File("X_train_b","wb")
 pickle.dump(X_train,ofile)
 ofile.close()
 
-ofile = bz2.BZ2File("X_test","wb")
+ofile = bz2.BZ2File("X_test_b","wb")
 pickle.dump(X_test,ofile)
 ofile.close()
 
-with open("y_train","wb") as arc:
+with open("y_train_b","wb") as arc:
     pickle.dump(y_train,arc)
 
-with open("y_test","wb") as arc:
+with open("y_test_b","wb") as arc:
     pickle.dump(y_test,arc)
 
-with open("encoder","wb") as arc:
-    pickle.dump(encoder,arc)
+#with open("encoder","wb") as arc:
+ #   pickle.dump(encoder,arc)
 
 
 
